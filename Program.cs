@@ -1,15 +1,36 @@
+using Gaby.io.Data;
+using Gaby.io.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Configuração do banco de dados (SQL Server)
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("Default")));
 
+// Identity (usuários e autenticação)
+builder.Services
+    .AddIdentity<UserModel, IdentityRole>(options =>
+    {
+        // Políticas de senha mais simples (ajuste conforme necessário)
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 4;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// Build da aplicação
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Pipeline de middleware
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -18,8 +39,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// 🔐 Identity middleware
+app.UseAuthentication();
 app.UseAuthorization();
 
+// Rotas
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
