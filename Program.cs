@@ -24,6 +24,9 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization();
+builder.Services.AddControllersWithViews();
+
 // Build da aplicação
 var app = builder.Build();
 
@@ -39,7 +42,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 🔐 Identity middleware
+// Identity middleware
 app.UseAuthentication();
 app.UseAuthorization();
 

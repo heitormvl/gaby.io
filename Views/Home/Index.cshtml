@@ -1,8 +1,318 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model Gaby.io.ViewModels.DashboardSummaryViewModel
+@{
+    ViewData["Title"] = "Dashboard de Leitura";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-5 fw-bold text-primary">
+                <i class="fas fa-book-reader me-2"></i>Dashboard de Leitura
+            </h1>
+            <p class="lead text-muted">Acompanhe suas estatísticas de leitura</p>
+        </div>
+    </div>
+
+    <!-- Cards de Resumo -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-book fa-2x text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Total de Livros</h6>
+                            <h3 class="mb-0">@Model.GenresDistribution.Sum(g => g.BooksRead)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-file-alt fa-2x text-success"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Total de Páginas</h6>
+                            <h3 class="mb-0">@Model.GenresDistribution.Sum(g => g.TotalPages).ToString("N0")</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-calendar-alt fa-2x text-warning"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Páginas Este Mês</h6>
+                            <h3 class="mb-0">@(Model.PagesByMonth.LastOrDefault()?.TotalPages ?? 0)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-chart-line fa-2x text-info"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Média Mensal</h6>
+                            <h3 class="mb-0">@((int)Model.PagesByMonth.Average(p => p.TotalPages))</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row g-3 mb-4">
+        <!-- Páginas por Mês -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        Páginas Lidas por Mês
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="chartPagesByMonth" style="width:100%; height:350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Páginas por Ano -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line text-success me-2"></i>
+                        Páginas Lidas por Ano
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="chartPagesByYear" style="width:100%; height:350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- Distribuição por Gênero -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie text-warning me-2"></i>
+                        Distribuição por Gênero
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="chartGenresDistribution" style="width:100%; height:350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Livros por Gênero e Ano -->
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-layer-group text-info me-2"></i>
+                        Livros por Gênero e Ano
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="chartGenresByYear" style="width:100%; height:350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Configuração de cores
+        const colors = {
+            primary: '#0d6efd',
+            success: '#198754',
+            warning: '#ffc107',
+            info: '#0dcaf0',
+            danger: '#dc3545',
+            secondary: '#6c757d'
+        };
+
+        const colorPalette = [
+            '#0d6efd', '#198754', '#ffc107', '#0dcaf0', 
+            '#dc3545', '#6610f2', '#fd7e14', '#20c997'
+        ];
+
+        // Layout responsivo padrão
+        const layoutConfig = {
+            responsive: true,
+            displayModeBar: false,
+            margin: { l: 50, r: 30, t: 30, b: 50 }
+        };
+
+        // 1. Páginas por Mês - Gráfico de Barras
+        const pagesByMonthData = [{
+            x: [@Html.Raw(string.Join(", ", Model.PagesByMonth.Select(p => $"'{p.MonthName}'")))],
+            y: [@Html.Raw(string.Join(", ", Model.PagesByMonth.Select(p => p.TotalPages)))],
+            type: 'bar',
+            marker: {
+                color: colors.primary,
+                line: { width: 0 }
+            },
+            text: [@Html.Raw(string.Join(", ", Model.PagesByMonth.Select(p => p.TotalPages)))],
+            textposition: 'outside',
+            hovertemplate: '<b>%{x}</b><br>%{y} páginas<extra></extra>'
+        }];
+
+        const pagesByMonthLayout = {
+            ...layoutConfig,
+            xaxis: { 
+                title: 'Mês',
+                tickangle: -45
+            },
+            yaxis: { 
+                title: 'Páginas',
+                gridcolor: '#e9ecef'
+            },
+            plot_bgcolor: '#ffffff',
+            paper_bgcolor: '#ffffff'
+        };
+
+        Plotly.newPlot('chartPagesByMonth', pagesByMonthData, pagesByMonthLayout, {responsive: true, displayModeBar: false});
+
+        // 2. Páginas por Ano - Gráfico de Linha com Marcadores
+        const pagesByYearData = [{
+            x: [@Html.Raw(string.Join(", ", Model.PagesByYear.Select(p => p.Year)))],
+            y: [@Html.Raw(string.Join(", ", Model.PagesByYear.Select(p => p.TotalPages)))],
+            type: 'scatter',
+            mode: 'lines+markers+text',
+            line: { 
+                color: colors.success,
+                width: 3,
+                shape: 'spline'
+            },
+            marker: { 
+                size: 12,
+                color: colors.success,
+                line: { color: 'white', width: 2 }
+            },
+            text: [@Html.Raw(string.Join(", ", Model.PagesByYear.Select(p => p.TotalPages)))],
+            textposition: 'top center',
+            hovertemplate: '<b>%{x}</b><br>%{y} páginas<extra></extra>'
+        }];
+
+        const pagesByYearLayout = {
+            ...layoutConfig,
+            xaxis: { 
+                title: 'Ano',
+                dtick: 1
+            },
+            yaxis: { 
+                title: 'Páginas',
+                gridcolor: '#e9ecef'
+            },
+            plot_bgcolor: '#ffffff',
+            paper_bgcolor: '#ffffff'
+        };
+
+        Plotly.newPlot('chartPagesByYear', pagesByYearData, pagesByYearLayout, {responsive: true, displayModeBar: false});
+
+        // 3. Distribuição por Gênero - Gráfico de Pizza
+        const genresDistributionData = [{
+            labels: [@Html.Raw(string.Join(", ", Model.GenresDistribution.Select(g => $"'{g.GenreName}'")))],
+            values: [@Html.Raw(string.Join(", ", Model.GenresDistribution.Select(g => g.BooksRead)))],
+            type: 'pie',
+            marker: {
+                colors: colorPalette
+            },
+            textinfo: 'label+percent',
+            textposition: 'outside',
+            hovertemplate: '<b>%{label}</b><br>%{value} livros (%{percent})<extra></extra>',
+            hole: 0.4
+        }];
+
+        const genresDistributionLayout = {
+            ...layoutConfig,
+            showlegend: false,
+            paper_bgcolor: '#ffffff'
+        };
+
+        Plotly.newPlot('chartGenresDistribution', genresDistributionData, genresDistributionLayout, {responsive: true, displayModeBar: false});
+
+        // 4. Livros por Gênero e Ano - Gráfico de Barras Agrupadas
+        const years = [...new Set([@Html.Raw(string.Join(", ", Model.GenresByYear.Select(g => g.Year)))])];
+        const genres = [...new Set([@Html.Raw(string.Join(", ", Model.GenresByYear.Select(g => $"'{g.GenreName}'")))])];
+
+        const genresByYearData = years.map((year, index) => {
+            const yearData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+                Model.GenresByYear.GroupBy(g => g.Year).ToDictionary(
+                    g => g.Key, 
+                    g => g.ToDictionary(x => x.GenreName, x => x.BooksRead)
+                )
+            ));
+            
+            return {
+                name: year.toString(),
+                x: genres,
+                y: genres.map(genre => {
+                    const genreNoQuotes = genre.replace(/'/g, '');
+                    return yearData[year]?.[genreNoQuotes] || 0;
+                }),
+                type: 'bar',
+                marker: {
+                    color: colorPalette[index]
+                },
+                hovertemplate: '<b>%{x}</b><br>%{y} livros<extra></extra>'
+            };
+        });
+
+        const genresByYearLayout = {
+            ...layoutConfig,
+            barmode: 'group',
+            xaxis: { 
+                title: 'Gênero',
+                tickangle: -45
+            },
+            yaxis: { 
+                title: 'Livros Lidos',
+                gridcolor: '#e9ecef'
+            },
+            plot_bgcolor: '#ffffff',
+            paper_bgcolor: '#ffffff',
+            legend: {
+                orientation: 'h',
+                y: -0.2,
+                x: 0.5,
+                xanchor: 'center'
+            }
+        };
+
+        Plotly.newPlot('chartGenresByYear', genresByYearData, genresByYearLayout, {responsive: true, displayModeBar: false});
+
+        // Redimensionamento responsivo
+        window.addEventListener('resize', function() {
+            Plotly.Plots.resize('chartPagesByMonth');
+            Plotly.Plots.resize('chartPagesByYear');
+            Plotly.Plots.resize('chartGenresDistribution');
+            Plotly.Plots.resize('chartGenresByYear');
+        });
+    </script>
+}
