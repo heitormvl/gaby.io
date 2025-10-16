@@ -78,68 +78,152 @@
         </div>
     </div>
 
-    <!-- Gráficos -->
-    <div class="row g-3 mb-4">
-        <!-- Páginas por Mês -->
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chart-bar text-primary me-2"></i>
-                        Páginas Lidas por Mês
-                    </h5>
+    <!-- Gráficos - Desktop -->
+    <div class="d-none d-lg-block">
+        <div class="row g-3 mb-4">
+            <!-- Páginas por Mês -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-bar text-primary me-2"></i>
+                            Páginas Lidas por Mês
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartPagesByMonth" style="width:100%; height:350px;"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div id="chartPagesByMonth" style="width:100%; height:350px;"></div>
+            </div>
+
+            <!-- Páginas por Ano -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line text-success me-2"></i>
+                            Páginas Lidas por Ano
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartPagesByYear" style="width:100%; height:350px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Páginas por Ano -->
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chart-line text-success me-2"></i>
-                        Páginas Lidas por Ano
-                    </h5>
+        <div class="row g-3 mb-4">
+            <!-- Distribuição por Gênero -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie text-warning me-2"></i>
+                            Distribuição por Gênero
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartGenresDistribution" style="width:100%; height:350px;"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div id="chartPagesByYear" style="width:100%; height:350px;"></div>
+            </div>
+
+            <!-- Livros por Gênero e Ano -->
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-layer-group text-info me-2"></i>
+                            Livros por Gênero e Ano
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartGenresByYear" style="width:100%; height:350px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-3 mb-4">
-        <!-- Distribuição por Gênero -->
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chart-pie text-warning me-2"></i>
-                        Distribuição por Gênero
-                    </h5>
+    <!-- Carrossel de Gráficos - Mobile -->
+    <div class="d-lg-none mb-4">
+        <div id="chartsCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-pause="hover">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#chartsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#chartsCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#chartsCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#chartsCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            </div>
+            <div class="carousel-inner">
+                <!-- Slide 1: Páginas por Mês -->
+                <div class="carousel-item active">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-bar text-primary me-2"></i>
+                                Páginas Lidas por Mês
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="chartPagesByMonthMobile" style="width:100%; height:350px;"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div id="chartGenresDistribution" style="width:100%; height:350px;"></div>
+                
+                <!-- Slide 2: Páginas por Ano -->
+                <div class="carousel-item">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-line text-success me-2"></i>
+                                Páginas Lidas por Ano
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="chartPagesByYearMobile" style="width:100%; height:350px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Slide 3: Distribuição por Gênero -->
+                <div class="carousel-item">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie text-warning me-2"></i>
+                                Distribuição por Gênero
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="chartGenresDistributionMobile" style="width:100%; height:350px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Slide 4: Livros por Gênero e Ano -->
+                <div class="carousel-item">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0">
+                                <i class="fas fa-layer-group text-info me-2"></i>
+                                Livros por Gênero e Ano
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="chartGenresByYearMobile" style="width:100%; height:350px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Livros por Gênero e Ano -->
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-0 py-3">
-                    <h5 class="mb-0">
-                        <i class="fas fa-layer-group text-info me-2"></i>
-                        Livros por Gênero e Ano
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div id="chartGenresByYear" style="width:100%; height:350px;"></div>
-                </div>
-            </div>
+            
+            <button class="carousel-control-prev" type="button" data-bs-target="#chartsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#chartsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" style="filter: invert(1);" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
         </div>
     </div>
 </div>
@@ -197,6 +281,7 @@
         };
 
         Plotly.newPlot('chartPagesByMonth', pagesByMonthData, pagesByMonthLayout, {responsive: true, displayModeBar: false});
+        Plotly.newPlot('chartPagesByMonthMobile', pagesByMonthData, pagesByMonthLayout, {responsive: true, displayModeBar: false});
 
         // 2. Páginas por Ano - Gráfico de Linha com Marcadores
         const pagesByYearData = [{
@@ -234,6 +319,7 @@
         };
 
         Plotly.newPlot('chartPagesByYear', pagesByYearData, pagesByYearLayout, {responsive: true, displayModeBar: false});
+        Plotly.newPlot('chartPagesByYearMobile', pagesByYearData, pagesByYearLayout, {responsive: true, displayModeBar: false});
 
         // 3. Distribuição por Gênero - Gráfico de Pizza
         const genresDistributionData = [{
@@ -256,6 +342,7 @@
         };
 
         Plotly.newPlot('chartGenresDistribution', genresDistributionData, genresDistributionLayout, {responsive: true, displayModeBar: false});
+        Plotly.newPlot('chartGenresDistributionMobile', genresDistributionData, genresDistributionLayout, {responsive: true, displayModeBar: false});
 
         // 4. Livros por Gênero e Ano - Gráfico de Barras Agrupadas
         const years = [...new Set([@Html.Raw(string.Join(", ", Model.GenresByYear.Select(g => g.Year)))])];
@@ -306,6 +393,35 @@
         };
 
         Plotly.newPlot('chartGenresByYear', genresByYearData, genresByYearLayout, {responsive: true, displayModeBar: false});
+        Plotly.newPlot('chartGenresByYearMobile', genresByYearData, genresByYearLayout, {responsive: true, displayModeBar: false});
+
+        // Controle do carrossel - pausa ao interagir
+        const carousel = document.getElementById('chartsCarousel');
+        if (carousel) {
+            carousel.addEventListener('touchstart', function() {
+                const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+                if (bsCarousel) {
+                    bsCarousel.pause();
+                }
+            });
+
+            carousel.addEventListener('mouseenter', function() {
+                const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+                if (bsCarousel) {
+                    bsCarousel.pause();
+                }
+            });
+
+            // Redimensiona gráficos quando o slide muda
+            carousel.addEventListener('slid.bs.carousel', function (event) {
+                setTimeout(function() {
+                    Plotly.Plots.resize('chartPagesByMonthMobile');
+                    Plotly.Plots.resize('chartPagesByYearMobile');
+                    Plotly.Plots.resize('chartGenresDistributionMobile');
+                    Plotly.Plots.resize('chartGenresByYearMobile');
+                }, 100);
+            });
+        }
 
         // Redimensionamento responsivo
         window.addEventListener('resize', function() {
@@ -313,6 +429,10 @@
             Plotly.Plots.resize('chartPagesByYear');
             Plotly.Plots.resize('chartGenresDistribution');
             Plotly.Plots.resize('chartGenresByYear');
+            Plotly.Plots.resize('chartPagesByMonthMobile');
+            Plotly.Plots.resize('chartPagesByYearMobile');
+            Plotly.Plots.resize('chartGenresDistributionMobile');
+            Plotly.Plots.resize('chartGenresByYearMobile');
         });
     </script>
 }
