@@ -1,0 +1,192 @@
+@model Gaby.io.ViewModels.CountryDetailsViewModel
+@{
+    ViewData["Title"] = "Detalhes do País";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">
+                        <i class="fas fa-flag me-2"></i>Detalhes do País
+                    </h1>
+                    <p class="lead text-muted">Informações completas sobre o país</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informações do País -->
+    <div class="row mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Informações do País
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                        <i class="fas fa-globe fa-lg text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Nome do País</h6>
+                                    <h4 class="mb-0 fw-bold">@Model.Name</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-secondary bg-opacity-10 p-3">
+                                        <i class="fas fa-tag fa-lg text-secondary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Código ISO</h6>
+                                    <h4 class="mb-0">
+                                        <span class="badge bg-secondary fs-6">@Model.Code</span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                        <i class="fas fa-user-edit fa-lg text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Total de Autores</h6>
+                                    <h4 class="mb-0 fw-bold">
+                                        <span class="badge bg-success fs-6">@Model.Authors.Count</span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Ações -->
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cog me-2"></i>Ações
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit me-2"></i>Editar País
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash me-2"></i>Excluir País
+                        </a>
+                        <hr class="my-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>Ver Todos os Países
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Autores -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users me-2"></i>Autores de @Model.Name
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Authors.Any())
+                    {
+                        <!-- Lista Desktop -->
+                        <div class="d-none d-md-block">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="px-4 py-3">#</th>
+                                            <th class="px-4 py-3">Nome do Autor</th>
+                                            <th class="px-4 py-3 text-end" style="width: 150px;">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Authors.Count; i++)
+                                        {
+                                            <tr>
+                                                <td class="px-4 py-3">
+                                                    <span class="badge bg-light text-dark">@(i + 1)</span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-user-circle text-primary me-2"></i>
+                                                        <strong>@Model.Authors[i]</strong>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-end">
+                                                    <a href="#" class="btn btn-sm btn-outline-primary" title="Ver Autor">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Lista Mobile -->
+                        <div class="d-md-none">
+                            @for (int i = 0; i < Model.Authors.Count; i++)
+                            {
+                                <div class="card border-0 bg-light mb-2">
+                                    <div class="card-body py-2 px-3">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-primary me-2">@(i + 1)</span>
+                                                <i class="fas fa-user-circle text-primary me-2"></i>
+                                                <strong>@Model.Authors[i]</strong>
+                                            </div>
+                                            <a href="#" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Nenhum autor cadastrado</h5>
+                            <p class="text-muted">Este país ainda não possui autores associados.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

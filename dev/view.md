@@ -77,17 +77,17 @@
     - Confirmação para excluir um gênero.
 
 # Countries
-- [ ] Index
+- [X] Index
   - Lista resumida de países com nome e número de autores associados.
   - Botão "Adicionar País" e coluna de ações com botões "Detalhes", "Editar" e "Excluir".
-- [ ] Details
+- [X] Details
   - Exibe detalhes completos do país.
   - Botões "Editar" e "Excluir".
-- [ ] Create
+- [X] Create
     - Formulário para adicionar um novo país.
-- [ ] Edit
+- [X] Edit
     - Formulário para editar um país existente.
-- [ ] Delete
+- [X] Delete
     - Confirmação para excluir um país.
 
 # Account
