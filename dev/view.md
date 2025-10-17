@@ -7,17 +7,17 @@
     4. Livros por Gênero e Ano (Gráfico de Barras Agrupadas)
 
 # Books
-- [ ] Index
+- [X] Index
   - Lista resumida de livros com título, autor, gênero e número de páginas.
   - Botão "Adicionar Livro" e coluna de ações com botões "Detalhes", "Editar" e "Excluir".
-- [ ] Details
+- [X] Details
   - Exibe detalhes completos do livro.
   - Botões "Editar" e "Excluir".
-- [ ] Create
+- [X] Create
     - Formulário para adicionar um novo livro.
-- [ ] Edit
+- [X] Edit
     - Formulário para editar um livro existente.
-- [ ] Delete
+- [X] Delete
     - Confirmação para excluir um livro.
 
 # Readings
