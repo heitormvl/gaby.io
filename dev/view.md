@@ -35,17 +35,17 @@
     - Confirmação para excluir uma leitura.
 
 # Authors
-- [ ] Index
+- [X] Index
   - Lista resumida de autores com nome e número de livros escritos.
   - Botão "Adicionar Autor" e coluna de ações com botões "Detalhes", "Editar" e "Excluir".
-- [ ] Details
+- [X] Details
   - Exibe detalhes completos do autor.
   - Botões "Editar" e "Excluir".
-- [ ] Create
+- [X] Create
     - Formulário para adicionar um novo autor.
-- [ ] Edit
+- [X] Edit
     - Formulário para editar um autor existente.
-- [ ] Delete
+- [X] Delete
     - Confirmação para excluir um autor.
 
 # Publishers

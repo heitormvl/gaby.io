@@ -1,0 +1,254 @@
+@model Gaby.io.ViewModels.AuthorDeleteViewModel
+@{
+    ViewData["Title"] = "Excluir Autor";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Excluir Autor
+                    </h1>
+                    <p class="lead text-muted">Confirme a exclusão do autor</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerta de Aviso -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="alert alert-danger border-0 shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-shield-alt me-2"></i>Atenção!
+                        </h5>
+                        <p class="mb-0">
+                            Esta ação é <strong>irreversível</strong>. 
+                            @if (Model.BookCount > 0)
+                            {
+                                <strong class="text-decoration-underline">Este autor possui @Model.BookCount @(Model.BookCount == 1 ? "livro" : "livros") cadastrado(s)</strong>
+                                <text> e não poderá ser excluído até que os livros sejam removidos ou associados a outro autor.</text>
+                            }
+                            else
+                            {
+                                <span>Todos os dados relacionados a este autor serão permanentemente excluídos.</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informações do Autor -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Informações do Autor a ser Excluído
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                        <i class="fas fa-user-circle fa-lg text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Nome do Autor</h6>
+                                    <h4 class="mb-0 fw-bold">@Model.Name</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-info bg-opacity-10 p-3">
+                                        <i class="fas fa-venus-mars fa-lg text-info"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Gênero</h6>
+                                    <h4 class="mb-0">
+                                        <span class="badge bg-info fs-6">@Model.Gender</span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-secondary bg-opacity-10 p-3">
+                                        <i class="fas fa-flag fa-lg text-secondary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">País de Origem</h6>
+                                    <h4 class="mb-0">
+                                        @if (!string.IsNullOrEmpty(Model.CountryName))
+                                        {
+                                            <span class="badge bg-secondary fs-6">@Model.CountryName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted"><em>Não informado</em></span>
+                                        }
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                        <i class="fas fa-book fa-lg text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Total de Livros</h6>
+                                    <h4 class="mb-0">
+                                        <span class="badge @(Model.BookCount > 0 ? "bg-danger" : "bg-success") fs-6">
+                                            @Model.BookCount
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                        @if (Model.BookCount > 0)
+                        {
+                            <!-- Aviso de Restrição -->
+                        <div class="bg-warning bg-opacity-10 border border-warning rounded p-4 mb-4">
+                            <h6 class="mb-3 text-warning">
+                                <i class="fas fa-ban me-2"></i>Exclusão Bloqueada
+                            </h6>
+                            <p class="mb-0 text-dark">
+                                <strong>Este autor não pode ser excluído</strong> porque possui <strong>@Model.BookCount @(Model.BookCount == 1 ? "livro" : "livros")</strong> cadastrado(s).
+                                <text>Para excluir este autor, primeiro remova ou associe seus livros a outro autor.</text>
+                            </p>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-eye me-2"></i>Ver Detalhes do Autor
+                                </a>
+                            </div>
+                            <div class="col-12">
+                                <a asp-action="Index" class="btn btn-outline-secondary btn-lg w-100">
+                                    <i class="fas fa-arrow-left me-2"></i>Voltar para Lista
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- Confirmação -->
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            
+                            <div class="bg-light rounded p-4 mb-4">
+                                <h6 class="mb-3">
+                                    <i class="fas fa-question-circle text-danger me-2"></i>Tem certeza que deseja excluir este autor?
+                                </h6>
+                                <ul class="mb-0 text-muted small">
+                                    <li class="mb-2">
+                                        <i class="fas fa-times-circle text-danger me-1"></i>
+                                        Esta ação não pode ser desfeita.
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-times-circle text-danger me-1"></i>
+                                        Você precisará cadastrar o autor novamente se mudar de ideia.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-times-circle text-danger me-1"></i>
+                                        Todas as informações do autor serão perdidas.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Botões de Ação -->
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm">
+                                        <i class="fas fa-trash me-2"></i>Confirmar Exclusão
+                                    </button>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-lg w-100">
+                                        <i class="fas fa-times me-2"></i>Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+
+            <!-- Card de Segurança -->
+            <div class="card border-0 shadow-sm mt-4 bg-light">
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-shield-alt text-info me-2"></i>Alternativas
+                    </h6>
+                    <ul class="mb-0 small text-muted">
+                        <li class="mb-2">
+                            <i class="fas fa-edit text-warning me-1"></i>
+                            Se há um erro nas informações, você pode <a asp-action="Edit" asp-route-id="@Model.Id" class="text-warning fw-bold">editar o autor</a> ao invés de excluí-lo.
+                        </li>
+                        <li>
+                            <i class="fas fa-eye text-primary me-1"></i>
+                            Para revisar as informações, acesse a <a asp-action="Details" asp-route-id="@Model.Id" class="text-primary fw-bold">página de detalhes</a>.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Confirmação adicional antes de submeter (apenas se não houver livros)
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const confirmed = confirm('Você tem certeza que deseja EXCLUIR este autor? Esta ação é IRREVERSÍVEL!');
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+
+            // Adiciona efeito visual ao passar o mouse sobre o botão de excluir
+            const deleteBtn = document.querySelector('button[type="submit"]');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('mouseenter', function() {
+                    this.classList.add('shadow');
+                });
+                deleteBtn.addEventListener('mouseleave', function() {
+                    this.classList.remove('shadow');
+                });
+            }
+        }
+    </script>
+}
