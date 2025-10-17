@@ -63,17 +63,17 @@
     - Confirmação para excluir uma editora.
 
 # Genres
-- [ ] Index
+- [X] Index
   - Lista resumida de gêneros com nome e número de livros associados.
   - Botão "Adicionar Gênero" e coluna de ações com botões "Detalhes", "Editar" e "Excluir".
-- [ ] Details
+- [X] Details
   - Exibe detalhes completos do gênero.
   - Botões "Editar" e "Excluir".
-- [ ] Create
+- [X] Create
     - Formulário para adicionar um novo gênero.
-- [ ] Edit
+- [X] Edit
     - Formulário para editar um gênero existente.
-- [ ] Delete
+- [X] Delete
     - Confirmação para excluir um gênero.
 
 # Countries

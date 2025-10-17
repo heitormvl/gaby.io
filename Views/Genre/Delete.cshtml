@@ -1,0 +1,164 @@
+@model Gaby.io.ViewModels.GenreDeleteViewModel
+@{
+    ViewData["Title"] = "Excluir Gênero";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Excluir Gênero
+                    </h1>
+                    <p class="lead text-muted">Confirme a exclusão do gênero literário</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerta de Aviso -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="alert alert-danger border-0 shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle fa-2x"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h5 class="alert-heading mb-2">
+                            <i class="fas fa-shield-alt me-2"></i>Atenção!
+                        </h5>
+                        <p class="mb-0">
+                            Esta ação é <strong>irreversível</strong>. 
+                            Todos os dados relacionados a este gênero serão permanentemente excluídos. 
+                            Os livros associados a este gênero perderão a referência ao gênero.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informações do Gênero -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Informações do Gênero a ser Excluído
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4 mb-4">
+                        <div class="col-12">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                        <i class="fas fa-bookmark fa-lg text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Nome do Gênero</h6>
+                                    <h4 class="mb-0 fw-bold">@Model.Name</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Confirmação -->
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="bg-light rounded p-4 mb-4">
+                            <h6 class="mb-3">
+                                <i class="fas fa-question-circle text-danger me-2"></i>Tem certeza que deseja excluir este gênero?
+                            </h6>
+                            <ul class="mb-0 text-muted small">
+                                <li class="mb-2">
+                                    <i class="fas fa-times-circle text-danger me-1"></i>
+                                    Esta ação não pode ser desfeita.
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-times-circle text-danger me-1"></i>
+                                    Você precisará cadastrar o gênero novamente se mudar de ideia.
+                                </li>
+                                <li>
+                                    <i class="fas fa-times-circle text-danger me-1"></i>
+                                    Livros associados a este gênero perderão a referência ao gênero.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm">
+                                    <i class="fas fa-trash me-2"></i>Confirmar Exclusão
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-lg w-100">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card de Segurança -->
+            <div class="card border-0 shadow-sm mt-4 bg-light">
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-shield-alt text-info me-2"></i>Alternativas
+                    </h6>
+                    <ul class="mb-0 small text-muted">
+                        <li class="mb-2">
+                            <i class="fas fa-edit text-warning me-1"></i>
+                            Se há um erro nas informações, você pode <a asp-action="Edit" asp-route-id="@Model.Id" class="text-warning fw-bold">editar o gênero</a> ao invés de excluí-lo.
+                        </li>
+                        <li>
+                            <i class="fas fa-eye text-primary me-1"></i>
+                            Para revisar as informações, acesse a <a asp-action="Details" asp-route-id="@Model.Id" class="text-primary fw-bold">página de detalhes</a>.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Confirmação adicional antes de submeter
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const confirmed = confirm('Você tem certeza que deseja EXCLUIR este gênero? Esta ação é IRREVERSÍVEL!');
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+
+            // Adiciona efeito visual ao passar o mouse sobre o botão de excluir
+            const deleteBtn = document.querySelector('button[type="submit"]');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('mouseenter', function() {
+                    this.classList.add('shadow');
+                });
+                deleteBtn.addEventListener('mouseleave', function() {
+                    this.classList.remove('shadow');
+                });
+            }
+        }
+    </script>
+}
