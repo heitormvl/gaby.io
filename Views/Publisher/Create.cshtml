@@ -1,0 +1,113 @@
+@model Gaby.io.ViewModels.PublisherFormViewModel
+@{
+    ViewData["Title"] = "Adicionar Editora";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">
+                        <i class="fas fa-plus-circle me-2"></i>Adicionar Editora
+                    </h1>
+                    <p class="lead text-muted">Cadastrar uma nova editora no sistema</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>Dados da Editora
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Atenção!</strong> Por favor, corrija os erros abaixo.
+                        </div>
+
+                        <!-- Nome da Editora -->
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="fas fa-building text-primary me-2"></i>Nome da Editora
+                            </label>
+                            <input asp-for="Name" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Ex: Companhia das Letras, Intrínseca, etc."
+                                   autofocus />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Máximo de 100 caracteres.
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="row g-3 mt-4">
+                            <div class="col-12 col-md-6">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
+                                    <i class="fas fa-save me-2"></i>Salvar Editora
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <a asp-action="Index" class="btn btn-outline-secondary btn-lg w-100">
+                                    <i class="fas fa-times me-2"></i>Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card de Ajuda -->
+            <div class="card border-0 shadow-sm mt-4 bg-light">
+                <div class="card-body">
+                    <h6 class="mb-3">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>Dicas
+                    </h6>
+                    <ul class="mb-0 small text-muted">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-1"></i>
+                            O nome da editora deve ser único no sistema.
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-1"></i>
+                            Use o nome oficial da editora.
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle text-success me-1"></i>
+                            O campo de nome é obrigatório.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Validação customizada em tempo real
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const nameInput = document.querySelector('input[name="Name"]');
+            
+            // Remove espaços extras
+            nameInput.value = nameInput.value.trim();
+        });
+    </script>
+}

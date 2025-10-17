@@ -49,17 +49,17 @@
     - Confirmação para excluir um autor.
 
 # Publishers
-- [ ] Index
+- [X] Index
   - Lista resumida de editoras com nome e número de livros publicados.
   - Botão "Adicionar Editora" e coluna de ações com botões "Detalhes", "Editar" e "Excluir".
-- [ ] Details
+- [X] Details
   - Exibe detalhes completos da editora.
   - Botões "Editar" e "Excluir".
-- [ ] Create
+- [X] Create
     - Formulário para adicionar uma nova editora.
-- [ ] Edit
+- [X] Edit
     - Formulário para editar uma editora existente.
-- [ ] Delete
+- [X] Delete
     - Confirmação para excluir uma editora.
 
 # Genres
