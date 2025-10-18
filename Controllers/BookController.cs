@@ -21,15 +21,16 @@ public class BookController : Controller
         var books = _context.Books
             .Include(b => b.Author)
             .Include(b => b.Publisher)
-            .Include(b => b.Genre)
+            .Include(b => b.BookGenres)
+                .ThenInclude(bg => bg.Genre)
             .Select(b => new BookListViewModel
             {
                 Id = b.Id,
                 Title = b.Title,
                 AuthorName = b.Author.Name,
                 PublisherName = b.Publisher != null ? b.Publisher.Name : null,
-                GenreName = b.Genre != null ? b.Genre.Name : null,
-                PageCount = b.PageCount ?? 0
+                GenreNames = b.BookGenres.Select(bg => bg.Genre.Name).ToList(),
+                PageCount = b.PageCount
             })
             .ToList();
 
@@ -41,7 +42,8 @@ public class BookController : Controller
         var bookModel = _context.Books
             .Include(b => b.Author)
             .Include(b => b.Publisher)
-            .Include(b => b.Genre)
+            .Include(b => b.BookGenres)
+                .ThenInclude(bg => bg.Genre)
             .FirstOrDefault(b => b.Id == id);
 
         if (bookModel == null)
@@ -53,9 +55,9 @@ public class BookController : Controller
             Title = bookModel.Title,
             AuthorName = bookModel.Author.Name,
             PublisherName = bookModel.Publisher?.Name,
-            GenreName = bookModel.Genre?.Name,
-            PageCount = bookModel.PageCount ?? 0,
-            PublicationDate = null
+            GenreNames = bookModel.BookGenres.Select(bg => bg.Genre.Name).ToList(),
+            PageCount = bookModel.PageCount,
+            PublicationDate = bookModel.PublicationDate
         };
 
         return View(book);
@@ -108,19 +110,36 @@ public class BookController : Controller
             Title = model.Title,
             AuthorId = model.AuthorId,
             PublisherId = model.PublisherId,
-            GenreId = model.GenreId,
-            PageCount = model.PageCount
+            PageCount = model.PageCount,
+            PublicationDate = model.PublicationDate
         };
 
         _context.Books.Add(book);
         _context.SaveChanges();
+
+        // Adicionar os gêneros selecionados
+        if (model.GenreIds != null && model.GenreIds.Any())
+        {
+            foreach (var genreId in model.GenreIds)
+            {
+                _context.BookGenres.Add(new BookGenreModel
+                {
+                    BookId = book.Id,
+                    GenreId = genreId
+                });
+            }
+            _context.SaveChanges();
+        }
 
         return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Edit(int id)
     {
-        var bookModel = _context.Books.Find(id);
+        var bookModel = _context.Books
+            .Include(b => b.BookGenres)
+            .FirstOrDefault(b => b.Id == id);
+            
         if (bookModel == null)
             return NotFound();
 
@@ -130,8 +149,9 @@ public class BookController : Controller
             Title = bookModel.Title,
             AuthorId = bookModel.AuthorId,
             PublisherId = bookModel.PublisherId,
-            GenreId = bookModel.GenreId,
-            PageCount = bookModel.PageCount ?? 0,
+            GenreIds = bookModel.BookGenres.Select(bg => bg.GenreId).ToList(),
+            PageCount = bookModel.PageCount,
+            PublicationDate = bookModel.PublicationDate,
             Authors = _context.Authors
                 .OrderBy(a => a.Name)
                 .Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.Name })
@@ -173,15 +193,39 @@ public class BookController : Controller
             return View(model);
         }
 
-        var bookToUpdate = _context.Books.Find(id);
+        var bookToUpdate = _context.Books
+            .Include(b => b.BookGenres)
+            .FirstOrDefault(b => b.Id == id);
+            
         if (bookToUpdate == null)
             return NotFound();
 
         bookToUpdate.Title = model.Title;
         bookToUpdate.AuthorId = model.AuthorId;
         bookToUpdate.PublisherId = model.PublisherId;
-        bookToUpdate.GenreId = model.GenreId;
         bookToUpdate.PageCount = model.PageCount;
+        bookToUpdate.PublicationDate = model.PublicationDate;
+
+        // Remover gêneros antigos
+        var existingGenres = bookToUpdate.BookGenres.ToList();
+        foreach (var genre in existingGenres)
+        {
+            _context.BookGenres.Remove(genre);
+        }
+
+        // Adicionar novos gêneros
+        if (model.GenreIds != null && model.GenreIds.Any())
+        {
+            foreach (var genreId in model.GenreIds)
+            {
+                _context.BookGenres.Add(new BookGenreModel
+                {
+                    BookId = bookToUpdate.Id,
+                    GenreId = genreId
+                });
+            }
+        }
+
         _context.SaveChanges();
 
         return RedirectToAction(nameof(Details), new { id = model.Id });

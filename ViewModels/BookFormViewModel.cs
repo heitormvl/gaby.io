@@ -18,8 +18,8 @@ public class BookFormViewModel
     [Display(Name = "Editora")]
     public int? PublisherId { get; set; }
 
-    [Display(Name = "Gênero")]
-    public int? GenreId { get; set; }
+    [Display(Name = "Gêneros")]
+    public List<int> GenreIds { get; set; } = new();
 
     [Display(Name = "Número de páginas")]
     [Range(1, 10000, ErrorMessage = "Insira um número válido de páginas.")]

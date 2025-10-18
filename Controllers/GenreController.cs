@@ -18,22 +18,29 @@ public class GenreController : Controller
     public IActionResult Index()
     {
         var genres = _context.Genres
-            .Include(g => g.Books)
+            .Include(g => g.BookGenres)
             .Select(g => new GenreListViewModel
             {
                 Id = g.Id,
                 Name = g.Name,
-                BookCount = g.Books.Count
+                BookCount = g.BookGenres.Count
             })
             .ToList();
 
-        return View(genres);
+        var viewModel = new GenreIndexViewModel
+        {
+            Genres = genres,
+            TotalUniqueBooks = _context.Books.Count()
+        };
+
+        return View(viewModel);
     }
 
     public IActionResult Details(int id)
     {
         var genreModel = _context.Genres
-            .Include(g => g.Books)
+            .Include(g => g.BookGenres)
+                .ThenInclude(bg => bg.Book)
             .FirstOrDefault(g => g.Id == id);
 
         if (genreModel == null)
@@ -43,7 +50,7 @@ public class GenreController : Controller
         {
             Id = genreModel.Id,
             Name = genreModel.Name,
-            Books = genreModel.Books.Select(b => b.Title).ToList()
+            Books = genreModel.BookGenres.Select(bg => bg.Book.Title).ToList()
         };
 
         return View(genre);
@@ -116,7 +123,7 @@ public class GenreController : Controller
     public IActionResult Delete(int id)
     {
         var genreModel = _context.Genres
-            .Include(g => g.Books)
+            .Include(g => g.BookGenres)
             .FirstOrDefault(g => g.Id == id);
 
         if (genreModel == null)

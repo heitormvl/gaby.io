@@ -22,6 +22,19 @@ public class ReadingModel
     [Column(TypeName = "decimal(2,1)")]
     public decimal? Rating { get; set; }
 
+    // Novos campos
+    [DataType(DataType.Date)]
+    public DateTime? StartDate { get; set; }
+
+    [DataType(DataType.Date)]
+    public DateTime? EndDate { get; set; }
+
+    [MaxLength(20)]
+    public string Status { get; set; } = "Em progresso";
+
+    [Range(0, 10000)]
+    public int PagesRead { get; set; }
+
     [ForeignKey(nameof(BookId))]
     public BookModel Book { get; set; } = null!;
 

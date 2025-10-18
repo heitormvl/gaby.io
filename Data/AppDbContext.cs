@@ -17,6 +17,7 @@ public class AppDbContext : IdentityDbContext<UserModel, IdentityRole<string>, s
     public DbSet<PublisherModel> Publishers { get; set; }
     public DbSet<GenreModel> Genres { get; set; }
     public DbSet<BookModel> Books { get; set; }
+    public DbSet<BookGenreModel> BookGenres { get; set; }
     public DbSet<ReadingModel> Readings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -68,14 +69,25 @@ public class AppDbContext : IdentityDbContext<UserModel, IdentityRole<string>, s
             .HasConstraintName("FK_Book_Publisher")
             .OnDelete(DeleteBehavior.SetNull);
 
-        // Configuração de Genre → Book (SetNull)
-        // Livros mantidos se o gênero for removido
-        modelBuilder.Entity<BookModel>()
-            .HasOne(b => b.Genre)
-            .WithMany(g => g.Books)
-            .HasForeignKey(b => b.GenreId)
-            .HasConstraintName("FK_Book_Genre")
-            .OnDelete(DeleteBehavior.SetNull);
+        // Configuração de BookGenre (relacionamento muitos-para-muitos)
+        modelBuilder.Entity<BookGenreModel>()
+            .HasOne(bg => bg.Book)
+            .WithMany(b => b.BookGenres)
+            .HasForeignKey(bg => bg.BookId)
+            .HasConstraintName("FK_BookGenre_Book")
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BookGenreModel>()
+            .HasOne(bg => bg.Genre)
+            .WithMany(g => g.BookGenres)
+            .HasForeignKey(bg => bg.GenreId)
+            .HasConstraintName("FK_BookGenre_Genre")
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Índice único para evitar duplicatas na tabela de relacionamento
+        modelBuilder.Entity<BookGenreModel>()
+            .HasIndex(bg => new { bg.BookId, bg.GenreId })
+            .IsUnique();
 
         // Índices para melhorar performance
         modelBuilder.Entity<CountryModel>()

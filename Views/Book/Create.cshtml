@@ -67,15 +67,37 @@
                             <span asp-validation-for="PublisherId" class="text-danger"></span>
                         </div>
 
-                        <!-- Gênero -->
+                        <!-- Gêneros -->
                         <div class="mb-4">
-                            <label asp-for="GenreId" class="form-label fw-semibold">
-                                <i class="fas fa-tags text-secondary me-2"></i>Gênero (opcional)
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-tags text-secondary me-2"></i>Gêneros (opcional)
                             </label>
-                            <select asp-for="GenreId" asp-items="Model.Genres" class="form-select form-select-lg">
-                                <option value="">-- Selecione um gênero --</option>
-                            </select>
-                            <span asp-validation-for="GenreId" class="text-danger"></span>
+                            <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                                @if (Model.Genres != null && Model.Genres.Any())
+                                {
+                                    @foreach (var genre in Model.Genres)
+                                    {
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   name="GenreIds" 
+                                                   value="@genre.Value" 
+                                                   id="genre_@genre.Value"
+                                                   @(Model.GenreIds != null && Model.GenreIds.Contains(int.Parse(genre.Value)) ? "checked" : "") />
+                                            <label class="form-check-label" for="genre_@genre.Value">
+                                                @genre.Text
+                                            </label>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-muted mb-0">Nenhum gênero cadastrado</p>
+                                }
+                            </div>
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>Você pode selecionar múltiplos gêneros
+                            </small>
                         </div>
 
                         <!-- Páginas -->
@@ -120,7 +142,8 @@
                     <ul class="mb-0 small text-muted">
                         <li class="mb-2"><i class="fas fa-check-circle text-success me-1"></i>O título deve ser único no sistema.</li>
                         <li class="mb-2"><i class="fas fa-check-circle text-success me-1"></i>Autor é obrigatório.</li>
-                        <li><i class="fas fa-check-circle text-success me-1"></i>Os campos Editora e Gênero são opcionais.</li>
+                        <li><i class="fas fa-check-circle text-success me-1"></i>Os campos Editora e Gêneros são opcionais.</li>
+                        <li><i class="fas fa-check-circle text-success me-1"></i>Você pode selecionar múltiplos gêneros para um livro.</li>
                     </ul>
                 </div>
             </div>

@@ -4,6 +4,7 @@ using Gaby.io.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace gaby.io.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251018171724_AddReadingDetailsFields")]
+    partial class AddReadingDetailsFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,30 +54,6 @@ namespace gaby.io.Migrations
                     b.ToTable("Authors");
                 });
 
-            modelBuilder.Entity("Gaby.io.Models.BookGenreModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenreId");
-
-                    b.HasIndex("BookId", "GenreId")
-                        .IsUnique();
-
-                    b.ToTable("BookGenres");
-                });
-
             modelBuilder.Entity("Gaby.io.Models.BookModel", b =>
                 {
                     b.Property<int>("Id")
@@ -86,11 +65,11 @@ namespace gaby.io.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PageCount")
+                    b.Property<int?>("GenreId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("PublicationDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("PageCount")
+                        .HasColumnType("int");
 
                     b.Property<int?>("PublisherId")
                         .HasColumnType("int");
@@ -103,6 +82,8 @@ namespace gaby.io.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("GenreId");
 
                     b.HasIndex("PublisherId");
 
@@ -435,27 +416,6 @@ namespace gaby.io.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("Gaby.io.Models.BookGenreModel", b =>
-                {
-                    b.HasOne("Gaby.io.Models.BookModel", "Book")
-                        .WithMany("BookGenres")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_BookGenre_Book");
-
-                    b.HasOne("Gaby.io.Models.GenreModel", "Genre")
-                        .WithMany("BookGenres")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_BookGenre_Genre");
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Genre");
-                });
-
             modelBuilder.Entity("Gaby.io.Models.BookModel", b =>
                 {
                     b.HasOne("Gaby.io.Models.AuthorModel", "Author")
@@ -465,6 +425,12 @@ namespace gaby.io.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Book_Author");
 
+                    b.HasOne("Gaby.io.Models.GenreModel", "Genre")
+                        .WithMany("Books")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Book_Genre");
+
                     b.HasOne("Gaby.io.Models.PublisherModel", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
@@ -472,6 +438,8 @@ namespace gaby.io.Migrations
                         .HasConstraintName("FK_Book_Publisher");
 
                     b.Navigation("Author");
+
+                    b.Navigation("Genre");
 
                     b.Navigation("Publisher");
                 });
@@ -555,8 +523,6 @@ namespace gaby.io.Migrations
 
             modelBuilder.Entity("Gaby.io.Models.BookModel", b =>
                 {
-                    b.Navigation("BookGenres");
-
                     b.Navigation("Readings");
                 });
 
@@ -567,7 +533,7 @@ namespace gaby.io.Migrations
 
             modelBuilder.Entity("Gaby.io.Models.GenreModel", b =>
                 {
-                    b.Navigation("BookGenres");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("Gaby.io.Models.PublisherModel", b =>

@@ -75,7 +75,7 @@
                                 <tr>
                                     <th class="px-4 py-3">Título</th>
                                     <th class="px-4 py-3">Autor</th>
-                                    <th class="px-4 py-3">Gênero</th>
+                                    <th class="px-4 py-3">Gênero(s)</th>
                                     <th class="px-4 py-3 text-center">Páginas</th>
                                     <th class="px-4 py-3 text-center" style="width: 200px;">Ações</th>
                                 </tr>
@@ -92,9 +92,12 @@
                                         </td>
                                         <td class="px-4 py-3">@book.AuthorName</td>
                                         <td class="px-4 py-3">
-                                            @if (!string.IsNullOrEmpty(book.GenreName))
+                                            @if (book.GenreNames != null && book.GenreNames.Any())
                                             {
-                                                <span class="badge bg-secondary">@book.GenreName</span>
+                                                @foreach (var genre in book.GenreNames)
+                                                {
+                                                    <span class="badge bg-secondary me-1">@genre</span>
+                                                }
                                             }
                                             else
                                             {
@@ -134,10 +137,19 @@
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <div>
                                     <h5 class="card-title mb-1"><i class="fas fa-book text-primary me-2"></i>@book.Title</h5>
-                                    <div class="d-flex gap-2 flex-wrap small">
+                                    <div class="d-flex gap-2 flex-wrap small mb-2">
                                         <span><strong>Autor:</strong> @book.AuthorName</span>
                                         <span><strong>Páginas:</strong> @book.PageCount</span>
                                     </div>
+                                    @if (book.GenreNames != null && book.GenreNames.Any())
+                                    {
+                                        <div class="mb-2">
+                                            @foreach (var genre in book.GenreNames)
+                                            {
+                                                <span class="badge bg-secondary me-1">@genre</span>
+                                            }
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             <div class="d-grid gap-2">

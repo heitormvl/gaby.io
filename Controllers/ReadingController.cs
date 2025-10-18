@@ -33,9 +33,9 @@ public class ReadingController : Controller
             {
                 Id = r.Id,
                 BookTitle = r.Book.Title,
-                StartDate = new DateTime(r.Year ?? DateTime.Now.Year, r.Month ?? 1, 1),
-                EndDate = null,
-                Status = r.Year.HasValue ? "Concluída" : "Em progresso"
+                StartDate = r.StartDate ?? new DateTime(r.Year ?? DateTime.Now.Year, r.Month ?? 1, 1),
+                EndDate = r.EndDate,
+                Status = r.Status
             })
             .ToListAsync();
 
@@ -60,11 +60,11 @@ public class ReadingController : Controller
         {
             Id = readingModel.Id,
             BookTitle = readingModel.Book.Title,
-            StartDate = new DateTime(readingModel.Year ?? DateTime.Now.Year, readingModel.Month ?? 1, 1),
-            EndDate = null,
-            Status = readingModel.Year.HasValue ? "Concluída" : "Em progresso",
-            PagesRead = 0,
-            TotalPages = readingModel.Book.PageCount ?? 0
+            StartDate = readingModel.StartDate ?? new DateTime(readingModel.Year ?? DateTime.Now.Year, readingModel.Month ?? 1, 1),
+            EndDate = readingModel.EndDate,
+            Status = readingModel.Status,
+            PagesRead = readingModel.PagesRead,
+            TotalPages = readingModel.Book.PageCount
         };
 
         return View(reading);
@@ -81,7 +81,7 @@ public class ReadingController : Controller
                 {
                     Id = b.Id,
                     Title = b.Title,
-                    PageCount = b.PageCount ?? 0
+                    PageCount = b.PageCount
                 })
                 .ToListAsync()
         };
@@ -105,7 +105,7 @@ public class ReadingController : Controller
                 {
                     Id = b.Id,
                     Title = b.Title,
-                    PageCount = b.PageCount ?? 0
+                    PageCount = b.PageCount
                 })
                 .ToListAsync();
 
@@ -116,6 +116,10 @@ public class ReadingController : Controller
         {
             BookId = model.BookId,
             UserId = userId,
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            Status = model.Status,
+            PagesRead = model.PagesRead,
             Year = model.StartDate.Year,
             Month = model.StartDate.Month,
             Rating = 0
@@ -144,17 +148,17 @@ public class ReadingController : Controller
         {
             Id = readingModel.Id,
             BookId = readingModel.BookId,
-            StartDate = new DateTime(readingModel.Year ?? DateTime.Now.Year, readingModel.Month ?? 1, 1),
-            EndDate = null,
-            Status = readingModel.Year.HasValue ? "Concluída" : "Em progresso",
-            PagesRead = 0,
+            StartDate = readingModel.StartDate ?? new DateTime(readingModel.Year ?? DateTime.Now.Year, readingModel.Month ?? 1, 1),
+            EndDate = readingModel.EndDate,
+            Status = readingModel.Status,
+            PagesRead = readingModel.PagesRead,
             AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
                 .Select(b => new BookSelectViewModel
                 {
                     Id = b.Id,
                     Title = b.Title,
-                    PageCount = b.PageCount ?? 0
+                    PageCount = b.PageCount
                 })
                 .ToListAsync()
         };
@@ -181,7 +185,7 @@ public class ReadingController : Controller
                 {
                     Id = b.Id,
                     Title = b.Title,
-                    PageCount = b.PageCount ?? 0
+                    PageCount = b.PageCount
                 })
                 .ToListAsync();
 
@@ -196,8 +200,13 @@ public class ReadingController : Controller
             return NotFound();
 
         readingToUpdate.BookId = model.BookId;
+        readingToUpdate.StartDate = model.StartDate;
+        readingToUpdate.EndDate = model.EndDate;
+        readingToUpdate.Status = model.Status;
+        readingToUpdate.PagesRead = model.PagesRead;
         readingToUpdate.Year = model.StartDate.Year;
         readingToUpdate.Month = model.StartDate.Month;
+        
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Details), new { id = model.Id });
@@ -221,7 +230,7 @@ public class ReadingController : Controller
         {
             Id = readingModel.Id,
             BookTitle = readingModel.Book.Title,
-            Status = readingModel.Year.HasValue ? "Concluída" : "Em progresso"
+            Status = readingModel.Status
         };
 
         return View(model);

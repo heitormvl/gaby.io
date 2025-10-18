@@ -68,11 +68,14 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="text-muted mb-1">Gênero</h6>
+                                    <h6 class="text-muted mb-1">Gêneros</h6>
                                     <h4 class="mb-0">
-                                        @if (!string.IsNullOrEmpty(Model.GenreName))
+                                        @if (Model.GenreNames != null && Model.GenreNames.Any())
                                         {
-                                            <span class="badge bg-secondary fs-6">@Model.GenreName</span>
+                                            @foreach (var genre in Model.GenreNames)
+                                            {
+                                                <span class="badge bg-secondary fs-6 me-1 mb-1">@genre</span>
+                                            }
                                         }
                                         else
                                         {

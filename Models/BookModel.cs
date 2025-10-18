@@ -15,8 +15,12 @@ public class BookModel
     public int AuthorId { get; set; }
 
     public int? PublisherId { get; set; }
-    public int? GenreId { get; set; }
-    public int? PageCount { get; set; }
+    
+    [Range(1, 10000)]
+    public int PageCount { get; set; }
+
+    [DataType(DataType.Date)]
+    public DateTime? PublicationDate { get; set; }
 
     [ForeignKey(nameof(AuthorId))]
     public AuthorModel Author { get; set; } = null!;
@@ -24,8 +28,7 @@ public class BookModel
     [ForeignKey(nameof(PublisherId))]
     public PublisherModel? Publisher { get; set; }
 
-    [ForeignKey(nameof(GenreId))]
-    public GenreModel? Genre { get; set; }
-
+    // Relacionamento muitos-para-muitos com Genre
+    public ICollection<BookGenreModel> BookGenres { get; set; } = new List<BookGenreModel>();
     public ICollection<ReadingModel> Readings { get; set; } = new List<ReadingModel>();
 }
