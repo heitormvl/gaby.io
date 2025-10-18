@@ -3,7 +3,150 @@
     ViewData["Title"] = "Dashboard de Leitura";
 }
 
-<div class="container-fluid">
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <!-- Versão para usuários não autenticados -->
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold text-primary mb-3">
+                    <i class="fas fa-book-reader me-2"></i>Bem-vindo ao Gaby.io
+                </h1>
+                <p class="lead text-muted">Seu companheiro pessoal de leitura</p>
+            </div>
+        </div>
+
+        <!-- Carrossel de Funcionalidades -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div id="featuresCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                        <button type="button" data-bs-target="#featuresCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                    </div>
+                    
+                    <div class="carousel-inner">
+                        <!-- Slide 1: Acompanhe suas Leituras -->
+                        <div class="carousel-item active">
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-body text-center p-5">
+                                    <div class="mb-4">
+                                        <i class="fas fa-book-open fa-5x text-primary"></i>
+                                    </div>
+                                    <h2 class="card-title fw-bold mb-3">Acompanhe suas Leituras</h2>
+                                    <p class="card-text lead text-muted mb-0">
+                                        Registre todos os livros que você lê e mantenha um histórico completo 
+                                        de suas leituras ao longo do tempo.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Estatísticas Detalhadas -->
+                        <div class="carousel-item">
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-body text-center p-5">
+                                    <div class="mb-4">
+                                        <i class="fas fa-chart-line fa-5x text-success"></i>
+                                    </div>
+                                    <h2 class="card-title fw-bold mb-3">Estatísticas Detalhadas</h2>
+                                    <p class="card-text lead text-muted mb-0">
+                                        Visualize gráficos e estatísticas sobre suas leituras: 
+                                        páginas lidas, gêneros favoritos, evolução ao longo dos anos e muito mais.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Organize sua Biblioteca -->
+                        <div class="carousel-item">
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-body text-center p-5">
+                                    <div class="mb-4">
+                                        <i class="fas fa-layer-group fa-5x text-warning"></i>
+                                    </div>
+                                    <h2 class="card-title fw-bold mb-3">Organize sua Biblioteca</h2>
+                                    <p class="card-text lead text-muted mb-0">
+                                        Categorize seus livros por gêneros, autores e editoras. 
+                                        Mantenha tudo organizado e fácil de encontrar.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 4: Compare com Amigos -->
+                        <div class="carousel-item">
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-body text-center p-5">
+                                    <div class="mb-4">
+                                        <i class="fas fa-users fa-5x text-info"></i>
+                                    </div>
+                                    <h2 class="card-title fw-bold mb-3">Compare com Amigos</h2>
+                                    <p class="card-text lead text-muted mb-0">
+                                        Veja o que seus amigos estão lendo e compare suas estatísticas. 
+                                        Compartilhe recomendações e inspire-se mutuamente!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 5: Defina Metas -->
+                        <div class="carousel-item">
+                            <div class="card border-0 shadow-lg">
+                                <div class="card-body text-center p-5">
+                                    <div class="mb-4">
+                                        <i class="fas fa-bullseye fa-5x text-danger"></i>
+                                    </div>
+                                    <h2 class="card-title fw-bold mb-3">Defina Metas de Leitura</h2>
+                                    <p class="card-text lead text-muted mb-0">
+                                        Estabeleça metas mensais e anuais de leitura. 
+                                        Acompanhe seu progresso e celebre suas conquistas!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#featuresCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#featuresCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card border-0 shadow-sm bg-primary text-white">
+                    <div class="card-body text-center p-4">
+                        <h3 class="mb-3">Pronto para começar?</h3>
+                        <p class="mb-4">Faça login ou crie uma conta para acessar todas as funcionalidades!</p>
+                        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                            <a href="@Url.Action("Login", "Account")" class="btn btn-light btn-lg px-4">
+                                <i class="fas fa-sign-in-alt me-2"></i>Entrar
+                            </a>
+                            <a href="@Url.Action("Register", "Account")" class="btn btn-outline-light btn-lg px-4">
+                                <i class="fas fa-user-plus me-2"></i>Criar Conta
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Versão para usuários autenticados -->
+    <div class="container-fluid">
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
@@ -247,10 +390,11 @@
         </div>
     </div>
     }
-</div>
+    </div>
+}
 
 @section Scripts {
-    @if (Model.TotalUniqueBooks > 0 || Model.TotalPages > 0)
+    @if (User.Identity?.IsAuthenticated == true && (Model.TotalUniqueBooks > 0 || Model.TotalPages > 0))
     {
     <script>
         // Configuração de cores
@@ -463,4 +607,5 @@
         });
     </script>
     }
+    </div>
 }
