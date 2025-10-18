@@ -1,0 +1,170 @@
+@model Gaby.io.ViewModels.ReadingDetailsViewModel
+@{
+    ViewData["Title"] = "Detalhes da Leitura";
+}
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h1 class="display-5 fw-bold text-primary">
+                        <i class="fas fa-book-reader me-2"></i>Detalhes da Leitura
+                    </h1>
+                    <p class="lead text-muted">Informações completas sobre o registro de leitura</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Voltar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informações da Leitura -->
+    <div class="row mb-4">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Dados da Leitura</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                        <i class="fas fa-book fa-lg text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Livro</h6>
+                                    <h4 class="mb-0 fw-bold">@Model.BookTitle</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                        <i class="fas fa-check-circle fa-lg text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Status</h6>
+                                    <h4 class="mb-0">
+                                        @if (Model.Status == "Concluída")
+                                        {
+                                            <span class="badge bg-success fs-6">
+                                                <i class="fas fa-check-circle me-1"></i>@Model.Status
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning fs-6">
+                                                <i class="fas fa-hourglass-half me-1"></i>@Model.Status
+                                            </span>
+                                        }
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-info bg-opacity-10 p-3">
+                                        <i class="fas fa-calendar-alt fa-lg text-info"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Data de Início</h6>
+                                    <h4 class="mb-0">@Model.StartDate.ToString("dd/MM/yyyy")</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                                        <i class="fas fa-calendar-check fa-lg text-warning"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Data de Término</h6>
+                                    <h4 class="mb-0">
+                                        @if (Model.EndDate.HasValue)
+                                        {
+                                            @Model.EndDate.Value.ToString("dd/MM/yyyy")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted"><em>—</em></span>
+                                        }
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-secondary bg-opacity-10 p-3">
+                                        <i class="fas fa-file-alt fa-lg text-secondary"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Páginas Lidas</h6>
+                                    <h4 class="mb-0">@Model.PagesRead / @Model.TotalPages</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                        <i class="fas fa-chart-pie fa-lg text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="text-muted mb-1">Progresso</h6>
+                                    <div class="progress mt-2" style="height: 25px;">
+                                        @{
+                                            int progress = Model.TotalPages > 0 ? (int)((Model.PagesRead * 100) / Model.TotalPages) : 0;
+                                        }
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: @progress%" aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="100">
+                                            @progress%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Ações</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit me-2"></i>Editar Leitura
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash me-2"></i>Excluir Leitura
+                        </a>
+                        <hr class="my-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>Ver Todas as Leituras
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

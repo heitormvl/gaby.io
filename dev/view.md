@@ -21,17 +21,17 @@
     - Confirmação para excluir um livro.
 
 # Readings
-- [ ] Index
+- [X] Index
   - Lista resumida de leituras com título do livro, data de início, data de término e status.
   - Botão "Adicionar Leitura" e coluna de ações com botões "Detalhes", "Editar" e "Excluir".
-- [ ] Details
+- [X] Details
   - Exibe detalhes completos da leitura.
   - Botões "Editar" e "Excluir".
-- [ ] Create
+- [X] Create
     - Formulário para adicionar uma nova leitura.
-- [ ] Edit
+- [X] Edit
     - Formulário para editar uma leitura existente.
-- [ ] Delete
+- [X] Delete
     - Confirmação para excluir uma leitura.
 
 # Authors
