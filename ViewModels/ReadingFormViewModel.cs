@@ -28,6 +28,14 @@ public class ReadingFormViewModel
     [Range(0, 10000, ErrorMessage = "Informe um número válido de páginas.")]
     public int PagesRead { get; set; }
 
-    // Dropdowns
-    public IEnumerable<SelectListItem>? Books { get; set; }
+    // Lista de livros com informações completas
+    public List<BookSelectViewModel> AvailableBooks { get; set; } = new();
+
+    // SelectListItems para compatibilidade com asp-items
+    public IEnumerable<SelectListItem>? Books => AvailableBooks?
+        .Select(b => new SelectListItem 
+        { 
+            Value = b.Id.ToString(), 
+            Text = b.Title 
+        });
 }

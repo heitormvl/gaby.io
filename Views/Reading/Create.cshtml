@@ -41,7 +41,7 @@
                             <label asp-for="BookId" class="form-label fw-semibold">
                                 <i class="fas fa-book text-primary me-2"></i>Selecione um Livro
                             </label>
-                            <select asp-for="BookId" asp-items="Model.Books" class="form-select form-select-lg">
+                            <select asp-for="BookId" asp-items="Model.Books" class="form-select form-select-lg" id="BookId">
                                 <option value="">-- Selecione um livro --</option>
                             </select>
                             <span asp-validation-for="BookId" class="text-danger"></span>
@@ -89,7 +89,7 @@
                             <label asp-for="PagesRead" class="form-label fw-semibold">
                                 <i class="fas fa-file-alt text-secondary me-2"></i>Páginas Lidas
                             </label>
-                            <input asp-for="PagesRead" type="number" class="form-control form-control-lg" placeholder="Ex: 250" />
+                            <input asp-for="PagesRead" type="number" class="form-control form-control-lg" placeholder="Ex: 250" id="PagesRead" />
                             <span asp-validation-for="PagesRead" class="text-danger"></span>
                         </div>
 
@@ -127,4 +127,56 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Mapeamento de bookId para pageCount vindo do Model
+        const bookPages = {
+            @foreach (var book in Model.AvailableBooks)
+            {
+                @:@book.Id: @book.PageCount,
+            }
+        };
+
+        // Função para obter o total de páginas do livro
+        function getBookPageCount(bookId) {
+            return bookPages[bookId] || 0;
+        }
+
+        // Função para atualizar páginas lidas
+        function updatePagesRead() {
+            const bookSelect = document.getElementById('BookId');
+            const statusCompleted = document.getElementById('statusCompleted');
+            const pagesReadInput = document.getElementById('PagesRead');
+            
+            if (statusCompleted && statusCompleted.checked && bookSelect.value) {
+                const pageCount = getBookPageCount(bookSelect.value);
+                if (pageCount > 0) {
+                    pagesReadInput.value = pageCount;
+                }
+            }
+        }
+
+        // Event listener para mudança de livro
+        document.getElementById('BookId').addEventListener('change', function() {
+            // Se o status já estiver como "Concluída", atualizar páginas
+            const statusCompleted = document.getElementById('statusCompleted');
+            if (statusCompleted && statusCompleted.checked) {
+                updatePagesRead();
+            }
+        });
+
+        // Event listeners para mudança de status
+        document.getElementById('statusProgress').addEventListener('change', function() {
+            if (this.checked) {
+                // Limpar páginas lidas ao mudar para "Em progresso"
+                document.getElementById('PagesRead').value = '';
+            }
+        });
+
+        document.getElementById('statusCompleted').addEventListener('change', function() {
+            if (this.checked) {
+                updatePagesRead();
+            }
+        });
+    </script>
 }

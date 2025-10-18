@@ -12,7 +12,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Identity (usuários e autenticação)
 builder.Services
-    .AddIdentity<UserModel, IdentityRole>(options =>
+    .AddIdentity<UserModel, IdentityRole<string>>(options =>
     {
         // Políticas de senha mais simples (ajuste conforme necessário)
         options.Password.RequireDigit = false;
@@ -23,6 +23,9 @@ builder.Services
     })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+// Custom ClaimsPrincipalFactory para adicionar DisplayName aos claims
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<UserModel>, Gaby.io.Factories.UserClaimsPrincipalFactory>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();

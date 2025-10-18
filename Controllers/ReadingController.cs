@@ -75,12 +75,13 @@ public class ReadingController : Controller
         var model = new ReadingFormViewModel
         {
             StartDate = DateTime.Now,
-            Books = await _context.Books
+            AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
-                .Select(b => new SelectListItem 
-                { 
-                    Value = b.Id.ToString(), 
-                    Text = b.Title 
+                .Select(b => new BookSelectViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount ?? 0
                 })
                 .ToListAsync()
         };
@@ -98,10 +99,16 @@ public class ReadingController : Controller
 
         if (!ModelState.IsValid)
         {
-            model.Books = await _context.Books
+            model.AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
-                .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Title })
+                .Select(b => new BookSelectViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount ?? 0
+                })
                 .ToListAsync();
+
             return View(model);
         }
 
@@ -141,9 +148,14 @@ public class ReadingController : Controller
             EndDate = null,
             Status = readingModel.Year.HasValue ? "Concluída" : "Em progresso",
             PagesRead = 0,
-            Books = await _context.Books
+            AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
-                .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Title })
+                .Select(b => new BookSelectViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount ?? 0
+                })
                 .ToListAsync()
         };
 
@@ -163,10 +175,16 @@ public class ReadingController : Controller
 
         if (!ModelState.IsValid)
         {
-            model.Books = await _context.Books
+            model.AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
-                .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Title })
+                .Select(b => new BookSelectViewModel
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    PageCount = b.PageCount ?? 0
+                })
                 .ToListAsync();
+
             return View(model);
         }
 

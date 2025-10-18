@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gaby.io.Data;
 
-public class AppDbContext : IdentityDbContext<UserModel, IdentityRole, string>
+public class AppDbContext : IdentityDbContext<UserModel, IdentityRole<string>, string>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
