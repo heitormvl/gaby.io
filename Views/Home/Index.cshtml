@@ -1,4 +1,4 @@
-@model Gaby.io.ViewModels.DashboardSummaryViewModel
+@model Gaby.io.ViewModels.DashboardViewModel
 @{
     ViewData["Title"] = "Dashboard de Leitura";
 }
@@ -25,7 +25,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Total de Livros</h6>
-                            <h3 class="mb-0">@Model.GenresDistribution.Sum(g => g.BooksRead)</h3>
+                            <h3 class="mb-0">@Model.TotalUniqueBooks</h3>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Total de Páginas</h6>
-                            <h3 class="mb-0">@Model.GenresDistribution.Sum(g => g.TotalPages).ToString("N0")</h3>
+                            <h3 class="mb-0">@Model.TotalPages.ToString("N0")</h3>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Páginas Este Mês</h6>
-                            <h3 class="mb-0">@(Model.PagesByMonth.LastOrDefault()?.TotalPages ?? 0)</h3>
+                            <h3 class="mb-0">@Model.PagesThisMonth</h3>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">Média Mensal</h6>
-                            <h3 class="mb-0">@((int)Model.PagesByMonth.Average(p => p.TotalPages))</h3>
+                            <h3 class="mb-0">@Model.MonthlyAverage</h3>
                         </div>
                     </div>
                 </div>
@@ -78,9 +78,29 @@
         </div>
     </div>
 
-    <!-- Gráficos - Desktop -->
-    <div class="d-none d-lg-block">
-        <div class="row g-3 mb-4">
+    @if (Model.TotalUniqueBooks == 0 && Model.TotalPages == 0)
+    {
+        <!-- Mensagem quando não há dados -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-book-open fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted mb-3">Nenhuma leitura registrada ainda</h4>
+                        <p class="text-muted mb-4">Comece a registrar suas leituras para ver suas estatísticas aqui!</p>
+                        <a href="@Url.Action("Create", "Reading")" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Registrar Leitura
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Gráficos - Desktop -->
+        <div class="d-none d-lg-block">
+            <div class="row g-3 mb-4">
             <!-- Páginas por Mês -->
             <div class="col-12 col-lg-6">
                 <div class="card border-0 shadow-sm">
@@ -226,9 +246,12 @@
             </button>
         </div>
     </div>
+    }
 </div>
 
 @section Scripts {
+    @if (Model.TotalUniqueBooks > 0 || Model.TotalPages > 0)
+    {
     <script>
         // Configuração de cores
         const colors = {
@@ -262,15 +285,20 @@
                 line: { width: 0 }
             },
             text: [@Html.Raw(string.Join(", ", Model.PagesByMonth.Select(p => p.TotalPages)))],
-            textposition: 'outside',
+            textposition: 'inside',
+            insidetextanchor: 'middle',
+            textfont: {
+                color: 'white',
+                size: 12,
+                weight: 'bold'
+            },
             hovertemplate: '<b>%{x}</b><br>%{y} páginas<extra></extra>'
         }];
 
         const pagesByMonthLayout = {
             ...layoutConfig,
             xaxis: { 
-                title: 'Mês',
-                tickangle: -45
+                title: 'Mês'
             },
             yaxis: { 
                 title: 'Páginas',
@@ -375,8 +403,7 @@
             ...layoutConfig,
             barmode: 'group',
             xaxis: { 
-                title: 'Gênero',
-                tickangle: -45
+                title: 'Gênero'
             },
             yaxis: { 
                 title: 'Livros Lidos',
@@ -435,4 +462,5 @@
             Plotly.Plots.resize('chartGenresByYearMobile');
         });
     </script>
+    }
 }
