@@ -23,13 +23,6 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Update appsettings.json with Connection String
-        shell: pwsh
-        run: |
-          $appsettings = Get-Content appsettings.json -Raw | ConvertFrom-Json
-          $appsettings.ConnectionStrings.DefaultConnection = "${{ secrets.CONNECTION_STRING }}"
-          $appsettings | ConvertTo-Json -Depth 10 | Set-Content appsettings.json
-
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
@@ -54,7 +47,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -69,4 +62,5 @@ jobs:
           app-name: 'gabyio'
           slot-name: 'Production'
           package: .
-          
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.CONNECTION_STRING }}
