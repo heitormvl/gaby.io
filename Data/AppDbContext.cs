@@ -103,5 +103,7 @@ public class AppDbContext : IdentityDbContext<UserModel, IdentityRole<string>, s
 
         modelBuilder.Entity<AuthorModel>()
             .HasIndex(a => a.Name);
+
+        modelBuilder.SeedCountries();
     }
 }
