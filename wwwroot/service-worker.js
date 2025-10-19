@@ -1,6 +1,5 @@
-const CACHE_NAME = "gabyio-cache-v1";
+const CACHE_NAME = "gabyio-cache-v2";
 const URLS_TO_CACHE = [
-  "/",
   "/css/site.css",
   "/js/site.js",
   "/manifest.json"
