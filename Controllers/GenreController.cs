@@ -70,6 +70,16 @@ public class GenreController : Controller
             return View(model);
         }
 
+        // Validar se já existe um gênero com o mesmo nome
+        var existingGenre = _context.Genres
+            .FirstOrDefault(g => g.Name.ToLower() == model.Name.ToLower());
+
+        if (existingGenre != null)
+        {
+            ModelState.AddModelError(nameof(model.Name), "Um gênero com este nome já existe.");
+            return View(model);
+        }
+
         var genre = new GenreModel
         {
             Name = model.Name
@@ -113,6 +123,16 @@ public class GenreController : Controller
         var genreToUpdate = _context.Genres.Find(id);
         if (genreToUpdate == null)
             return NotFound();
+
+        // Validar se já existe outro gênero com o mesmo nome
+        var existingGenre = _context.Genres
+            .FirstOrDefault(g => g.Name.ToLower() == model.Name.ToLower() && g.Id != id);
+
+        if (existingGenre != null)
+        {
+            ModelState.AddModelError(nameof(model.Name), "Um gênero com este nome já existe.");
+            return View(model);
+        }
 
         genreToUpdate.Name = model.Name;
         _context.SaveChanges();
