@@ -20,3 +20,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+:root {
+  --bs-primary: #6b10f3;
+  --bs-primary-rgb: 107, 16, 243;
+  --bs-link-color: #6b10f3;
+  --bs-link-hover-color: #5b00e0;
+}
