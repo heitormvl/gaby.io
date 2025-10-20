@@ -200,4 +200,15 @@ public class GenreController : Controller
 
         return Json(new { success = true, id = genre.Id, name = genre.Name });
     }
+
+    [HttpGet]
+    public IActionResult GetGenres()
+    {
+        var genres = _context.Genres
+            .OrderBy(g => g.Name)
+            .Select(g => new { id = g.Id, name = g.Name })
+            .ToList();
+
+        return Json(genres);
+    }
 }

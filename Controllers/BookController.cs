@@ -280,4 +280,46 @@ public class BookController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateAjax(BookFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            return Json(new { success = false, errors });
+        }
+
+        var book = new BookModel
+        {
+            Title = model.Title,
+            AuthorId = model.AuthorId,
+            PublisherId = model.PublisherId,
+            PageCount = model.PageCount,
+            PublicationDate = model.PublicationDate
+        };
+
+        _context.Books.Add(book);
+        _context.SaveChanges();
+
+        // Adicionar os gêneros selecionados
+        if (model.GenreIds != null && model.GenreIds.Any())
+        {
+            foreach (var genreId in model.GenreIds)
+            {
+                _context.BookGenres.Add(new BookGenreModel
+                {
+                    BookId = book.Id,
+                    GenreId = genreId
+                });
+            }
+            _context.SaveChanges();
+        }
+
+        return Json(new { success = true, id = book.Id, title = book.Title, pageCount = book.PageCount });
+    }
 }

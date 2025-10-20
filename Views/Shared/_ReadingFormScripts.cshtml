@@ -1,0 +1,366 @@
+<script>
+    $(document).ready(function() {
+        // Carregar dados necessários quando o modal de livro for aberto
+        $('#bookModal').on('show.bs.modal', function() {
+            loadAuthors();
+            loadPublishers();
+            loadGenres();
+        });
+
+        // Carregar países quando o modal de autor for aberto
+        $('#authorModal').on('show.bs.modal', function() {
+            $.ajax({
+                url: '@Url.Action("GetCountries", "Country")',
+                type: 'GET',
+                success: function(data) {
+                    var select = $('#authorCountry');
+                    select.empty();
+                    select.append('<option value="">-- Selecione --</option>');
+                    data.forEach(function(country) {
+                        select.append('<option value="' + country.id + '">' + country.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log('Não foi possível carregar os países');
+                }
+            });
+        });
+
+        // Função para carregar autores
+        function loadAuthors() {
+            $.ajax({
+                url: '@Url.Action("GetAuthors", "Author")',
+                type: 'GET',
+                success: function(authors) {
+                    var select = $('#bookAuthor');
+                    select.empty();
+                    select.append('<option value="">-- Selecione um autor --</option>');
+                    authors.forEach(function(author) {
+                        select.append('<option value="' + author.id + '">' + author.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log('Não foi possível carregar os autores');
+                }
+            });
+        }
+
+        // Função para carregar editoras
+        function loadPublishers() {
+            $.ajax({
+                url: '@Url.Action("GetPublishers", "Publisher")',
+                type: 'GET',
+                success: function(publishers) {
+                    var select = $('#bookPublisher');
+                    select.empty();
+                    select.append('<option value="">-- Selecione uma editora --</option>');
+                    publishers.forEach(function(publisher) {
+                        select.append('<option value="' + publisher.id + '">' + publisher.name + '</option>');
+                    });
+                },
+                error: function() {
+                    console.log('Não foi possível carregar as editoras');
+                }
+            });
+        }
+
+        // Função para carregar gêneros
+        function loadGenres() {
+            $.ajax({
+                url: '@Url.Action("GetGenres", "Genre")',
+                type: 'GET',
+                success: function(genres) {
+                    var container = $('#bookGenresContainer');
+                    container.empty();
+                    
+                    if (genres.length === 0) {
+                        container.append('<p class="text-muted mb-0">Nenhum gênero cadastrado</p>');
+                    } else {
+                        genres.forEach(function(genre) {
+                            var checkbox = `
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input book-genre-checkbox" 
+                                           type="checkbox" 
+                                           value="${genre.id}" 
+                                           id="book_genre_${genre.id}" />
+                                    <label class="form-check-label" for="book_genre_${genre.id}">
+                                        ${genre.name}
+                                    </label>
+                                </div>
+                            `;
+                            container.append(checkbox);
+                        });
+                    }
+                },
+                error: function() {
+                    console.log('Não foi possível carregar os gêneros');
+                }
+            });
+        }
+
+        // Salvar Livro
+        $('#saveBookBtn').click(function() {
+            var form = $('#bookForm');
+            var title = $('#bookTitle').val();
+            var authorId = $('#bookAuthor').val();
+            var publisherId = $('#bookPublisher').val();
+            var pageCount = $('#bookPageCount').val();
+            var publicationDate = $('#bookPublicationDate').val();
+
+            if (!title || !authorId || !pageCount) {
+                showModalError('#bookModalErrors', ['Título, Autor e Número de Páginas são obrigatórios.']);
+                return;
+            }
+
+            // Coletar gêneros selecionados
+            var genreIds = [];
+            $('.book-genre-checkbox:checked').each(function() {
+                genreIds.push($(this).val());
+            });
+
+            var formData = new FormData();
+            formData.append('Title', title);
+            formData.append('AuthorId', authorId);
+            if (publisherId) {
+                formData.append('PublisherId', publisherId);
+            }
+            formData.append('PageCount', pageCount);
+            if (publicationDate) {
+                formData.append('PublicationDate', publicationDate);
+            }
+            
+            // Adicionar gêneros
+            genreIds.forEach(function(genreId) {
+                formData.append('GenreIds', genreId);
+            });
+            
+            formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+            $.ajax({
+                url: '@Url.Action("CreateAjax", "Book")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Adicionar o novo livro ao select
+                        $('#BookId').append(new Option(response.title, response.id, true, true));
+                        
+                        // Adicionar ao mapeamento de páginas
+                        if (typeof bookPages !== 'undefined') {
+                            bookPages[response.id] = response.pageCount;
+                        }
+                        
+                        // Fechar modal e limpar formulário
+                        $('#bookModal').modal('hide');
+                        form[0].reset();
+                        hideModalError('#bookModalErrors');
+                        
+                        // Mostrar mensagem de sucesso
+                        showSuccessMessage('Livro adicionado com sucesso!');
+                    } else {
+                        showModalError('#bookModalErrors', response.errors);
+                    }
+                },
+                error: function() {
+                    showModalError('#bookModalErrors', ['Erro ao salvar o livro. Tente novamente.']);
+                }
+            });
+        });
+
+        // Salvar Autor
+        $('#saveAuthorBtn').click(function() {
+            var form = $('#authorForm');
+            var name = $('#authorName').val();
+            var gender = $('#authorGender').val();
+            var countryId = $('#authorCountry').val();
+
+            if (!name || !gender) {
+                showModalError('#authorModalErrors', ['Nome e Gênero são obrigatórios.']);
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('Name', name);
+            formData.append('Gender', gender);
+            if (countryId) {
+                formData.append('CountryId', countryId);
+            }
+            formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+            $.ajax({
+                url: '@Url.Action("CreateAjax", "Author")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Adicionar o novo autor ao select do modal de livro
+                        $('#bookAuthor').append(new Option(response.name, response.id, true, true));
+                        
+                        // Fechar modal e limpar formulário
+                        $('#authorModal').modal('hide');
+                        form[0].reset();
+                        hideModalError('#authorModalErrors');
+                        
+                        // Reabrir o modal de livro
+                        $('#bookModal').modal('show');
+                        
+                        // Mostrar mensagem de sucesso
+                        showSuccessMessage('Autor adicionado com sucesso!');
+                    } else {
+                        showModalError('#authorModalErrors', response.errors);
+                    }
+                },
+                error: function() {
+                    showModalError('#authorModalErrors', ['Erro ao salvar o autor. Tente novamente.']);
+                }
+            });
+        });
+
+        // Salvar Editora
+        $('#savePublisherBtn').click(function() {
+            var form = $('#publisherForm');
+            var name = $('#publisherName').val();
+
+            if (!name) {
+                showModalError('#publisherModalErrors', ['O nome é obrigatório.']);
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('Name', name);
+            formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+            $.ajax({
+                url: '@Url.Action("CreateAjax", "Publisher")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Adicionar a nova editora ao select do modal de livro
+                        $('#bookPublisher').append(new Option(response.name, response.id, true, true));
+                        
+                        // Fechar modal e limpar formulário
+                        $('#publisherModal').modal('hide');
+                        form[0].reset();
+                        hideModalError('#publisherModalErrors');
+                        
+                        // Reabrir o modal de livro
+                        $('#bookModal').modal('show');
+                        
+                        // Mostrar mensagem de sucesso
+                        showSuccessMessage('Editora adicionada com sucesso!');
+                    } else {
+                        showModalError('#publisherModalErrors', response.errors);
+                    }
+                },
+                error: function() {
+                    showModalError('#publisherModalErrors', ['Erro ao salvar a editora. Tente novamente.']);
+                }
+            });
+        });
+
+        // Salvar Gênero
+        $('#saveGenreBtn').click(function() {
+            var form = $('#genreForm');
+            var name = $('#genreName').val();
+
+            if (!name) {
+                showModalError('#genreModalErrors', ['O nome é obrigatório.']);
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('Name', name);
+            formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+            $.ajax({
+                url: '@Url.Action("CreateAjax", "Genre")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        // Adicionar o novo gênero à lista de checkboxes do modal de livro
+                        var container = $('#bookGenresContainer');
+                        var checkbox = `
+                            <div class="form-check mb-2">
+                                <input class="form-check-input book-genre-checkbox" 
+                                       type="checkbox" 
+                                       value="${response.id}" 
+                                       id="book_genre_${response.id}"
+                                       checked />
+                                <label class="form-check-label" for="book_genre_${response.id}">
+                                    ${response.name}
+                                </label>
+                            </div>
+                        `;
+                        
+                        // Remover mensagem "Nenhum gênero cadastrado" se existir
+                        container.find('p.text-muted').remove();
+                        container.append(checkbox);
+                        
+                        // Fechar modal e limpar formulário
+                        $('#genreModal').modal('hide');
+                        form[0].reset();
+                        hideModalError('#genreModalErrors');
+                        
+                        // Reabrir o modal de livro
+                        $('#bookModal').modal('show');
+                        
+                        // Mostrar mensagem de sucesso
+                        showSuccessMessage('Gênero adicionado com sucesso!');
+                    } else {
+                        showModalError('#genreModalErrors', response.errors);
+                    }
+                },
+                error: function() {
+                    showModalError('#genreModalErrors', ['Erro ao salvar o gênero. Tente novamente.']);
+                }
+            });
+        });
+
+        // Limpar erros ao fechar modais
+        $('.modal').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset();
+            $(this).find('.alert-danger').addClass('d-none').html('');
+        });
+
+        // Funções auxiliares
+        function showModalError(selector, errors) {
+            var errorDiv = $(selector);
+            errorDiv.removeClass('d-none');
+            errorDiv.html('<i class="fas fa-exclamation-triangle me-2"></i>' + errors.join('<br>'));
+        }
+
+        function hideModalError(selector) {
+            $(selector).addClass('d-none').html('');
+        }
+
+        function showSuccessMessage(message) {
+            // Criar toast ou alert temporário
+            var alert = `
+                <div class="alert alert-success alert-dismissible fade show position-fixed" 
+                     style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;" 
+                     role="alert">
+                    <i class="fas fa-check-circle me-2"></i>${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            $('body').append(alert);
+            
+            // Remover após 3 segundos
+            setTimeout(function() {
+                $('.alert-success').fadeOut(function() {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+    });
+</script>

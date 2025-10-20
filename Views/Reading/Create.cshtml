@@ -41,9 +41,14 @@
                             <label asp-for="BookId" class="form-label fw-semibold">
                                 <i class="fas fa-book text-primary me-2"></i>Selecione um Livro
                             </label>
-                            <select asp-for="BookId" asp-items="Model.Books" class="form-select form-select-lg" id="BookId">
-                                <option value="">-- Selecione um livro --</option>
-                            </select>
+                            <div class="input-group">
+                                <select asp-for="BookId" asp-items="Model.Books" class="form-select form-select-lg" id="BookId">
+                                    <option value="">-- Selecione um livro --</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bookModal" title="Adicionar novo livro">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="BookId" class="text-danger"></span>
                         </div>
 
@@ -142,10 +147,13 @@
             </div>
         </div>
     </div>
+
+    @await Html.PartialAsync("_ReadingFormModals")
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ReadingFormScripts")
     
     <style>
         .star-rating {

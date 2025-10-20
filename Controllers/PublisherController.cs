@@ -165,4 +165,15 @@ public class PublisherController : Controller
 
         return Json(new { success = true, id = publisher.Id, name = publisher.Name });
     }
+
+    [HttpGet]
+    public IActionResult GetPublishers()
+    {
+        var publishers = _context.Publishers
+            .OrderBy(p => p.Name)
+            .Select(p => new { id = p.Id, name = p.Name })
+            .ToList();
+
+        return Json(publishers);
+    }
 }

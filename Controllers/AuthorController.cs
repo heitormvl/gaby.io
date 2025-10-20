@@ -219,4 +219,15 @@ public class AuthorController : Controller
 
         return Json(new { success = true, id = author.Id, name = author.Name });
     }
+
+    [HttpGet]
+    public IActionResult GetAuthors()
+    {
+        var authors = _context.Authors
+            .OrderBy(a => a.Name)
+            .Select(a => new { id = a.Id, name = a.Name })
+            .ToList();
+
+        return Json(authors);
+    }
 }
