@@ -9,16 +9,24 @@ Implementamos um sistema completo de avaliação de livros onde cada usuário po
 ### 1. Models
 
 #### ReadingModel.cs
-- Adicionado atributo `[Range(0, 5)]` ao campo `Rating` para garantir que a avaliação seja entre 0 e 5
-- O campo já existia como `decimal(2,1)` no banco de dados
+### 1. Models
+
+#### ReadingModel.cs
+- Campo `Rating` alterado para `int?` com `[Range(0, 5)]` (anteriormente `decimal(2,1)`)
+- Adicionados campos: `StartDate` (DateTime?), `EndDate` (DateTime?), `Status` (string), `PagesRead` (int)
+- Campo `UserId` alterado para `string` (Identity padrão)
+- Adicionados campos: `StartDate`, `EndDate`, `Status`, `PagesRead`
+- Campo `UserId` alterado para `string` (Identity padrão)
 
 ### 2. ViewModels
 
 #### ReadingFormViewModel.cs
 - Adicionado campo `Rating` com validação de 0 a 5 para permitir ao usuário avaliar o livro
+- Adicionados campos: `StartDate`, `EndDate`, `Status`, `PagesRead`
 
 #### ReadingDetailsViewModel.cs
 - Adicionado campo `Rating` para exibir a avaliação na tela de detalhes
+- Adicionados campos: `StartDate`, `EndDate`, `Status`, `PagesRead`, `TotalPages`
 
 #### BookDetailsViewModel.cs
 - Adicionado campo `AverageRating` (decimal?) para mostrar a nota média
@@ -27,9 +35,9 @@ Implementamos um sistema completo de avaliação de livros onde cada usuário po
 ### 3. Controllers
 
 #### ReadingController.cs
-- **Create**: Atualizado para salvar o valor da avaliação (`Rating`)
-- **Edit**: Atualizado para carregar e salvar o valor da avaliação
-- **Details**: Atualizado para exibir a avaliação do usuário
+- **Create**: Atualizado para salvar o valor da avaliação (`Rating`) e novos campos (`StartDate`, `EndDate`, `Status`, `PagesRead`)
+- **Edit**: Atualizado para carregar e salvar o valor da avaliação e novos campos
+- **Details**: Atualizado para exibir a avaliação do usuário e novos campos
 
 #### BookController.cs
 - **Details**: Implementada lógica para calcular a nota média das avaliações:
@@ -40,17 +48,20 @@ Implementamos um sistema completo de avaliação de livros onde cada usuário po
 ### 4. Views
 
 #### Views/Reading/Create.cshtml
-- Adicionado campo de avaliação com input numérico (0-5, step 0.5)
+- Adicionado campo de avaliação com input numérico (0-5, step 1)
+- Adicionados campos: Data de início, Data de término, Status, Páginas lidas
 - Campo opcional (pode ser deixado em branco)
 
 #### Views/Reading/Edit.cshtml
-- Adicionado campo de avaliação com input numérico (0-5, step 0.5)
+- Adicionado campo de avaliação com input numérico (0-5, step 1)
+- Adicionados campos para editar os novos atributos
 - Permite editar a avaliação existente
 
 #### Views/Reading/Details.cshtml
 - Adicionada seção para exibir a avaliação do usuário
 - Exibição visual com estrelas (completas, metade e vazias)
 - Mostra o valor numérico da avaliação
+- Exibe os novos campos: datas, status, páginas lidas
 
 #### Views/Book/Details.cshtml
 - Adicionada seção para exibir a **avaliação média** do livro
@@ -80,14 +91,14 @@ Implementamos um sistema completo de avaliação de livros onde cada usuário po
 
 ## Características do Sistema
 
-- ✅ Cada usuário pode avaliar um livro de 0 a 5 estrelas
+- ✅ Cada usuário pode avaliar um livro de 0 a 5 estrelas (inteiro)
 - ✅ Avaliações são opcionais (podem ficar em branco)
-- ✅ Suporte a meias estrelas (0.5, 1.5, 2.5, etc)
 - ✅ Cálculo automático da média das avaliações
 - ✅ Contagem do total de avaliações
 - ✅ Exibição visual com ícones de estrelas
 - ✅ Filtra apenas avaliações válidas (maiores que 0)
 - ✅ Nota média arredondada para 1 casa decimal
+- ✅ Novos campos para rastreamento detalhado de leituras
 
 ## Próximos Passos Sugeridos
 
@@ -106,7 +117,7 @@ Implementamos um sistema completo de avaliação de livros onde cada usuário po
 
 ## Validações Implementadas
 
-- `Range(0, 5)` no Model para garantir valores válidos
+- `Range(0, 5)` no Model para garantir valores válidos (inteiro)
 - Campo opcional (aceita `null`)
-- Tipo `decimal(2,1)` no banco de dados para suportar meias estrelas
+- Tipo `int` no banco de dados
 - Filtro de avaliações > 0 no cálculo da média (ignora valores 0 ou null)

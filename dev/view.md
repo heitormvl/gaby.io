@@ -91,11 +91,11 @@
     - Confirmação para excluir um país.
 
 # Account
-- [ ] Index
+- [X] Index
   - Detales do usuário logado com nome, email e data de registro.
-- [ ] Login
+- [X] Login
   - Formulário de login com campos para email e senha.
-- [ ] Register
+- [X] Register
   - Formulário de registro com campos para nome, email, senha e confirmação de senha.
-- [ ] Logout
+- [X] Logout
   - Ação para deslogar o usuário.

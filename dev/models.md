@@ -4,18 +4,18 @@
 
 | Campo       | Tipo          | Descrição                       |
 | ----------- | ------------- | ------------------------------- |
-| Id          | int           | Identificador (Identity PK)     |
+| Id          | string        | Identificador (Identity PK)     |
 | UserName    | nvarchar(256) | Nome de login                   |
 | Email       | nvarchar(256) | Email do usuário                |
-| DisplayName | nvarchar(50)  | Nome visível (“Heitor”, “Gaby”) |
+| DisplayName | nvarchar(50)  | Nome visível ("Heitor", "Gaby") |
 
 ```csharp
-public class User : IdentityUser<int>
+public class UserModel : IdentityUser<string>
 {
     [Required, MaxLength(50)]
     public string DisplayName { get; set; } = string.Empty;
 
-    public ICollection<Reading> Readings { get; set; } = new List<Reading>();
+    public ICollection<ReadingModel> Readings { get; set; } = new List<ReadingModel>();
 }
 ```
 
@@ -49,20 +49,20 @@ public class Country
 | --------- | ------------- | ------------- |
 | Id        | int           | Identificador |
 | Name      | nvarchar(100) | Nome do autor |
-| CountryId | int           | FK → Country  |
-| Gender    | char(1)       | “F” ou “M”    |
+| CountryId | int?          | FK → Country  |
+| Gender    | char(1)       | "F" ou "M"    |
 
 ```csharp
-public class Author
+public class AuthorModel
 {
     [Key] public int Id { get; set; }
 
     [Required, MaxLength(100)] public string Name { get; set; } = string.Empty;
-    [Required] public int CountryId { get; set; }
+    public int? CountryId { get; set; }
     [Required, Column(TypeName = "char(1)")] public char Gender { get; set; }
 
-    [ForeignKey(nameof(CountryId))] public Country Country { get; set; } = null!;
-    public ICollection<Book> Books { get; set; } = new List<Book>();
+    [ForeignKey(nameof(CountryId))] public CountryModel? Country { get; set; }
+    public ICollection<BookModel> Books { get; set; } = new List<BookModel>();
 }
 ```
 
@@ -95,44 +95,67 @@ public class Publisher
 | Name  | nvarchar(50) | Nome do gênero (“Romance”, “Ficção”, etc.) |
 
 ```csharp
-public class Genre
+[Index(nameof(Name), IsUnique = true)]
+public class GenreModel
 {
     [Key] public int Id { get; set; }
     [Required, MaxLength(50)] public string Name { get; set; } = string.Empty;
 
-    public ICollection<Book> Books { get; set; } = new List<Book>();
+    // Relacionamento muitos-para-muitos com Book
+    public ICollection<BookGenreModel> BookGenres { get; set; } = new List<BookGenreModel>();
 }
 ```
 
 ---
 
-### **Book**
+### **BookGenre**
 
-| Campo       | Tipo          | Descrição         |
-| ----------- | ------------- | ----------------- |
-| Id          | int           | Identificador     |
-| Title       | nvarchar(200) | Título            |
-| AuthorId    | int           | FK → Author       |
-| PublisherId | int           | FK → Publisher    |
-| GenreId     | int           | FK → Genre        |
-| PageCount   | int           | Número de páginas |
+| Campo   | Tipo | Descrição     |
+| ------- | ---- | ------------- |
+| Id      | int  | Identificador |
+| BookId  | int  | FK → Book     |
+| GenreId | int  | FK → Genre    |
 
 ```csharp
-public class Book
+public class BookGenreModel
+{
+    [Key] public int Id { get; set; }
+    [Required] public int BookId { get; set; }
+    [Required] public int GenreId { get; set; }
+
+    [ForeignKey(nameof(BookId))] public BookModel Book { get; set; } = null!;
+    [ForeignKey(nameof(GenreId))] public GenreModel Genre { get; set; } = null!;
+}
+```
+
+---
+
+| Campo           | Tipo          | Descrição          |
+| --------------- | ------------- | ------------------ |
+| Id              | int           | Identificador      |
+| Title           | nvarchar(200) | Título             |
+| AuthorId        | int           | FK → Author        |
+| PublisherId     | int?          | FK → Publisher     |
+| PageCount       | int           | Número de páginas  |
+| PublicationDate | date          | Data de publicação |
+
+```csharp
+public class BookModel
 {
     [Key] public int Id { get; set; }
 
     [Required, MaxLength(200)] public string Title { get; set; } = string.Empty;
     [Required] public int AuthorId { get; set; }
     public int? PublisherId { get; set; }
-    public int? GenreId { get; set; }
-    public int? PageCount { get; set; }
+    [Range(1, 10000)] public int PageCount { get; set; }
+    [DataType(DataType.Date)] public DateTime? PublicationDate { get; set; }
 
-    [ForeignKey(nameof(AuthorId))] public Author Author { get; set; } = null!;
-    [ForeignKey(nameof(PublisherId))] public Publisher? Publisher { get; set;; }
-    [ForeignKey(nameof(GenreId))] public Genre? Genre { get; set;; }
+    [ForeignKey(nameof(AuthorId))] public AuthorModel Author { get; set; } = null!;
+    [ForeignKey(nameof(PublisherId))] public PublisherModel? Publisher { get; set; }
 
-    public ICollection<Reading> Readings { get; set; } = new List<Reading>();
+    // Relacionamento muitos-para-muitos com Genre
+    public ICollection<BookGenreModel> BookGenres { get; set; } = new List<BookGenreModel>();
+    public ICollection<ReadingModel> Readings { get; set; } = new List<ReadingModel>();
 }
 ```
 
@@ -140,31 +163,38 @@ public class Book
 
 ### **Reading**
 
-| Campo  | Tipo         | Descrição                 |
-| ------ | ------------ | ------------------------- |
-| Id     | int          | Identificador             |
-| BookId | int          | FK → Book                 |
-| UserId | int          | FK → User                 |
-| Year   | int          | Ano da leitura            |
-| Month  | int          | Mês numérico (1–12)       |
-| Rating | decimal(2,1) | Nota com uma casa decimal |
+| Campo     | Tipo         | Descrição                     |
+| --------- | ------------ | ----------------------------- |
+| Id        | int          | Identificador                 |
+| BookId    | int          | FK → Book                     |
+| UserId    | string       | FK → User                     |
+| Year      | int?         | Ano da leitura                |
+| Month     | int?         | Mês numérico (1–12)           |
+| Rating    | int?         | Nota (0-5)                    |
+| StartDate | date         | Data de início                |
+| EndDate   | date?        | Data de término               |
+| Status    | nvarchar(20) | Status ("Em progresso", etc.) |
+| PagesRead | int          | Páginas lidas                 |
 
 ```csharp
-public class Reading
+public class ReadingModel
 {
     [Key] public int Id { get; set; }
 
     [Required] public int BookId { get; set; }
-    [Required] public int UserId { get; set; }
+    [Required] public string UserId { get; set; }
 
     public int? Year { get; set; }
     [Range(1, 12)] public int? Month { get; set; }
+    [Range(0, 5)] public int? Rating { get; set; }
 
-    [Column(TypeName = "decimal(2,1)")]
-    public decimal? Rating { get; set; }
+    [DataType(DataType.Date)] public DateTime? StartDate { get; set; }
+    [DataType(DataType.Date)] public DateTime? EndDate { get; set; }
+    [MaxLength(20)] public string Status { get; set; } = "Em progresso";
+    [Range(0, 10000)] public int PagesRead { get; set; }
 
-    [ForeignKey(nameof(BookId))] public Book Book { get; set; } = null!;
-    [ForeignKey(nameof(UserId))] public User User { get; set; } = null!;
+    [ForeignKey(nameof(BookId))] public BookModel Book { get; set; } = null!;
+    [ForeignKey(nameof(UserId))] public UserModel User { get; set; } = null!;
 }
 ```
 
@@ -179,18 +209,20 @@ erDiagram
     Author ||--o{ Book : escreve
     Country ||--o{ Author : "origem"
     Publisher ||--o{ Book : "publica"
-    Genre ||--o{ Book : "classifica"
+    Genre ||--|| BookGenre : classifica
+    Book ||--|| BookGenre : "é classificado em"
 ```
 
 ---
 
 ### OnDelete Cascade
 
-| Relação              | Tipo | `OnDelete` | Justificativa                                                                                                  |
-| -------------------- | ---- | ---------- | -------------------------------------------------------------------------------------------------------------- |
-| **User → Reading**   | 1:N  | `Restrict` | Se o usuário for apagado, **preserve as leituras** (histórico). Você pode bloquear deleção se houver leituras. |
-| **Book → Reading**   | 1:N  | `Cascade`  | Se um livro for apagado, **apague as leituras** associadas (porque a leitura depende diretamente do livro).    |
-| **Author → Book**    | 1:N  | `Restrict` | Impede apagar um autor que tenha livros vinculados. Garante integridade e evita cascade acidental.             |
-| **Country → Author** | 1:N  | `SetNull`  | Se um país for removido, mantenha o autor e apenas limpe `CountryId` (autores “sem país”).                     |
-| **Publisher → Book** | 1:N  | `SetNull`  | Se a editora for excluída, o livro continua existindo sem referência à editora.                                |
-| **Genre → Book**     | 1:N  | `SetNull`  | Mesmo raciocínio — livros mantidos se o gênero for removido.                                                   |
+| Relação               | Tipo | `OnDelete` | Justificativa                                                                                                  |
+| --------------------- | ---- | ---------- | -------------------------------------------------------------------------------------------------------------- |
+| **User → Reading**    | 1:N  | `Restrict` | Se o usuário for apagado, **preserve as leituras** (histórico). Você pode bloquear deleção se houver leituras. |
+| **Book → Reading**    | 1:N  | `Cascade`  | Se um livro for apagado, **apague as leituras** associadas (porque a leitura depende diretamente do livro).    |
+| **Author → Book**     | 1:N  | `Restrict` | Impede apagar um autor que tenha livros vinculados. Garante integridade e evita cascade acidental.             |
+| **Country → Author**  | 1:N  | `SetNull`  | Se um país for removido, mantenha o autor e apenas limpe `CountryId` (autores “sem país”).                     |
+| **Publisher → Book**  | 1:N  | `SetNull`  | Se a editora for excluída, o livro continua existindo sem referência à editora.                                |
+| **Genre → BookGenre** | 1:N  | `Cascade`  | Se um gênero for removido, remova as associações BookGenre.                                                    |
+| **Book → BookGenre**  | 1:N  | `Cascade`  | Se um livro for removido, remova as associações BookGenre.                                                     |
