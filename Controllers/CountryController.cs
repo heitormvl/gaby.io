@@ -28,6 +28,7 @@ public class CountryController : Controller
                 Code = c.Code,
                 AuthorCount = c.Authors.Count
             })
+            .OrderBy(c => c.Name)
             .ToList();
 
         return View(countries);

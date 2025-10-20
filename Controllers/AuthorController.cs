@@ -31,6 +31,7 @@ public class AuthorController : Controller
                 CountryName = a.Country != null ? a.Country.Name : null,
                 BookCount = a.Books.Count
             })
+            .OrderBy(a => a.Name)
             .ToList();
 
         return View(authors);

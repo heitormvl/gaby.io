@@ -34,6 +34,7 @@ public class BookController : Controller
                 GenreNames = b.BookGenres.Select(bg => bg.Genre.Name).ToList(),
                 PageCount = b.PageCount
             })
+            .OrderBy(b => b.Title)
             .ToList();
 
         return View(books);

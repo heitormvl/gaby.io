@@ -27,6 +27,7 @@ public class GenreController : Controller
                 Name = g.Name,
                 BookCount = g.BookGenres.Count
             })
+            .OrderBy(g => g.Name)
             .ToList();
 
         var viewModel = new GenreIndexViewModel

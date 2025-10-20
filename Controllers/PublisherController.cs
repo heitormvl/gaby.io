@@ -27,6 +27,7 @@ public class PublisherController : Controller
                 Name = p.Name,
                 BookCount = p.Books.Count
             })
+            .OrderBy(p => p.Name)
             .ToList();
 
         return View(publishers);

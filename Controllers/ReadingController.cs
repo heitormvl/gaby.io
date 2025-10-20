@@ -39,6 +39,7 @@ public class ReadingController : Controller
                 EndDate = r.EndDate,
                 Status = r.Status
             })
+            .OrderBy(r => r.StartDate)
             .ToListAsync();
 
         return View(readings);
