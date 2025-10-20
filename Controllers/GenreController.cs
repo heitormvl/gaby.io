@@ -3,9 +3,11 @@ using Gaby.io.ViewModels;
 using Gaby.io.Data;
 using Gaby.io.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class GenreController : Controller
 {
     private readonly AppDbContext _context;

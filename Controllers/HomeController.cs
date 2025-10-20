@@ -4,9 +4,11 @@ using Gaby.io.Data;
 using Gaby.io.ViewModels;
 using System.Globalization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly AppDbContext _context;
@@ -16,6 +18,7 @@ public class HomeController : Controller
         _context = context;
     }
 
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         // Obtém o ID do usuário logado

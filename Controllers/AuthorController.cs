@@ -4,9 +4,11 @@ using Gaby.io.Data;
 using Gaby.io.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class AuthorController : Controller
 {
     private readonly AppDbContext _context;

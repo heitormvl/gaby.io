@@ -4,9 +4,11 @@ using Gaby.io.Models;
 using Gaby.io.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class BookController : Controller
 {
     private readonly AppDbContext _context;
@@ -156,7 +158,7 @@ public class BookController : Controller
         var bookModel = _context.Books
             .Include(b => b.BookGenres)
             .FirstOrDefault(b => b.Id == id);
-            
+
         if (bookModel == null)
             return NotFound();
 
@@ -213,7 +215,7 @@ public class BookController : Controller
         var bookToUpdate = _context.Books
             .Include(b => b.BookGenres)
             .FirstOrDefault(b => b.Id == id);
-            
+
         if (bookToUpdate == null)
             return NotFound();
 

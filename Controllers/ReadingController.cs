@@ -5,9 +5,11 @@ using Gaby.io.Models;
 using Gaby.io.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class ReadingController : Controller
 {
     private readonly AppDbContext _context;
@@ -22,7 +24,7 @@ public class ReadingController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = _userManager.GetUserId(User);
-        
+
         if (string.IsNullOrEmpty(userId))
             return RedirectToAction("Login", "Account");
 
@@ -45,7 +47,7 @@ public class ReadingController : Controller
     public async Task<IActionResult> Wishlist()
     {
         var userId = _userManager.GetUserId(User);
-        
+
         if (string.IsNullOrEmpty(userId))
             return RedirectToAction("Login", "Account");
 
@@ -233,7 +235,7 @@ public class ReadingController : Controller
         readingToUpdate.Rating = model.Status == "Desejado" ? null : model.Rating;
         readingToUpdate.Year = model.Status == "Desejado" ? null : model.StartDate?.Year;
         readingToUpdate.Month = model.Status == "Desejado" ? null : model.StartDate?.Month;
-        
+
         await _context.SaveChangesAsync();
 
         return model.Status == "Desejado" ? RedirectToAction(nameof(Wishlist)) : RedirectToAction(nameof(Details), new { id = model.Id });

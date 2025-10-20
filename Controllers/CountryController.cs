@@ -3,9 +3,11 @@ using Gaby.io.ViewModels;
 using Gaby.io.Data;
 using Gaby.io.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class CountryController : Controller
 {
     private readonly AppDbContext _context;
@@ -52,7 +54,7 @@ public class CountryController : Controller
 
     public IActionResult Create()
     {
-    return View();
+        return View();
     }
 
     [HttpPost]

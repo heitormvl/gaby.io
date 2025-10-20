@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Gaby.io.Controllers;
 
+[Authorize]
 public class AccountController : Controller
 {
     private readonly UserManager<UserModel> _userManager;
@@ -17,12 +18,14 @@ public class AccountController : Controller
         _signInManager = signInManager;
     }
 
+    [AllowAnonymous]
     // GET: Account/Register
     public IActionResult Register()
     {
         return View();
     }
 
+    [AllowAnonymous]
     // POST: Account/Register
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -101,6 +104,7 @@ public class AccountController : Controller
         return View(model);
     }
 
+    [AllowAnonymous]
     // GET: Account/Login
     public IActionResult Login(string? returnUrl = null)
     {
@@ -108,6 +112,7 @@ public class AccountController : Controller
         return View();
     }
 
+    [AllowAnonymous]
     // POST: Account/Login
     [HttpPost]
     [ValidateAntiForgeryToken]
