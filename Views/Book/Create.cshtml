@@ -50,9 +50,14 @@
                             <label asp-for="AuthorId" class="form-label fw-semibold">
                                 <i class="fas fa-user-edit text-info me-2"></i>Autor
                             </label>
-                            <select asp-for="AuthorId" asp-items="Model.Authors" class="form-select form-select-lg">
-                                <option value="">-- Selecione um autor --</option>
-                            </select>
+                            <div class="input-group">
+                                <select asp-for="AuthorId" asp-items="Model.Authors" class="form-select form-select-lg" id="authorSelect">
+                                    <option value="">-- Selecione um autor --</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#authorModal" title="Adicionar novo autor">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="AuthorId" class="text-danger"></span>
                         </div>
 
@@ -61,18 +66,28 @@
                             <label asp-for="PublisherId" class="form-label fw-semibold">
                                 <i class="fas fa-building text-secondary me-2"></i>Editora (opcional)
                             </label>
-                            <select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select form-select-lg">
-                                <option value="">-- Selecione uma editora --</option>
-                            </select>
+                            <div class="input-group">
+                                <select asp-for="PublisherId" asp-items="Model.Publishers" class="form-select form-select-lg" id="publisherSelect">
+                                    <option value="">-- Selecione uma editora --</option>
+                                </select>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#publisherModal" title="Adicionar nova editora">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                             <span asp-validation-for="PublisherId" class="text-danger"></span>
                         </div>
 
                         <!-- Gêneros -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="fas fa-tags text-secondary me-2"></i>Gêneros (opcional)
-                            </label>
-                            <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label fw-semibold mb-0">
+                                    <i class="fas fa-tags text-secondary me-2"></i>Gêneros (opcional)
+                                </label>
+                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#genreModal" title="Adicionar novo gênero">
+                                    <i class="fas fa-plus me-1"></i>Novo Gênero
+                                </button>
+                            </div>
+                            <div class="border rounded p-3" id="genresContainer" style="max-height: 200px; overflow-y: auto;">
                                 @if (Model.Genres != null && Model.Genres.Any())
                                 {
                                     @foreach (var genre in Model.Genres)
@@ -149,8 +164,11 @@
             </div>
         </div>
     </div>
+
+    @await Html.PartialAsync("_BookFormModals")
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_BookFormScripts")
 }

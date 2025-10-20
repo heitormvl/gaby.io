@@ -145,4 +145,24 @@ public class PublisherController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateAjax(PublisherFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+        }
+
+        var publisher = new PublisherModel
+        {
+            Name = model.Name
+        };
+
+        _context.Publishers.Add(publisher);
+        _context.SaveChanges();
+
+        return Json(new { success = true, id = publisher.Id, name = publisher.Name });
+    }
 }

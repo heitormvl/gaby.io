@@ -197,4 +197,26 @@ public class AuthorController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateAjax(AuthorFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+        }
+
+        var author = new AuthorModel
+        {
+            Name = model.Name,
+            Gender = char.ToUpper(model.Gender),
+            CountryId = model.CountryId
+        };
+
+        _context.Authors.Add(author);
+        _context.SaveChanges();
+
+        return Json(new { success = true, id = author.Id, name = author.Name });
+    }
 }

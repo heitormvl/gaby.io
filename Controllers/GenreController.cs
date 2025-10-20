@@ -171,4 +171,33 @@ public class GenreController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CreateAjax(GenreFormViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+        }
+
+        // Validar se já existe um gênero com o mesmo nome
+        var existingGenre = _context.Genres
+            .FirstOrDefault(g => g.Name.ToLower() == model.Name.ToLower());
+
+        if (existingGenre != null)
+        {
+            return Json(new { success = false, errors = new[] { "Um gênero com este nome já existe." } });
+        }
+
+        var genre = new GenreModel
+        {
+            Name = model.Name
+        };
+
+        _context.Genres.Add(genre);
+        _context.SaveChanges();
+
+        return Json(new { success = true, id = genre.Id, name = genre.Name });
+    }
 }

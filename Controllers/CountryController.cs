@@ -145,4 +145,15 @@ public class CountryController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpGet]
+    public IActionResult GetCountries()
+    {
+        var countries = _context.Countries
+            .OrderBy(c => c.Name)
+            .Select(c => new { id = c.Id, name = c.Name })
+            .ToList();
+
+        return Json(countries);
+    }
 }

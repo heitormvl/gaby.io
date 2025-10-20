@@ -1,0 +1,107 @@
+<!-- Modal Adicionar Autor -->
+<div class="modal fade" id="authorModal" tabindex="-1" aria-labelledby="authorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="authorModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Adicionar Novo Autor
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="authorModalErrors" class="alert alert-danger d-none"></div>
+                <form id="authorForm">
+                    <div class="mb-3">
+                        <label for="authorName" class="form-label fw-semibold">Nome do Autor <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="authorName" name="Name" required maxlength="100" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="authorGender" class="form-label fw-semibold">Gênero <span class="text-danger">*</span></label>
+                        <select class="form-select" id="authorGender" name="Gender" required>
+                            <option value="">-- Selecione --</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Feminino</option>
+                            <option value="N">Não-binário</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="authorCountry" class="form-label fw-semibold">País de Origem</label>
+                        <select class="form-select" id="authorCountry" name="CountryId">
+                            <option value="">-- Selecione --</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="saveAuthorBtn">
+                    <i class="fas fa-save me-1"></i>Salvar Autor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar Editora -->
+<div class="modal fade" id="publisherModal" tabindex="-1" aria-labelledby="publisherModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="publisherModalLabel">
+                    <i class="fas fa-building me-2"></i>Adicionar Nova Editora
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="publisherModalErrors" class="alert alert-danger d-none"></div>
+                <form id="publisherForm">
+                    <div class="mb-3">
+                        <label for="publisherName" class="form-label fw-semibold">Nome da Editora <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="publisherName" name="Name" required maxlength="100" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="savePublisherBtn">
+                    <i class="fas fa-save me-1"></i>Salvar Editora
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adicionar Gênero -->
+<div class="modal fade" id="genreModal" tabindex="-1" aria-labelledby="genreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="genreModalLabel">
+                    <i class="fas fa-tags me-2"></i>Adicionar Novo Gênero
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="genreModalErrors" class="alert alert-danger d-none"></div>
+                <form id="genreForm">
+                    <div class="mb-3">
+                        <label for="genreName" class="form-label fw-semibold">Nome do Gênero <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="genreName" name="Name" required maxlength="50" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="saveGenreBtn">
+                    <i class="fas fa-save me-1"></i>Salvar Gênero
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
