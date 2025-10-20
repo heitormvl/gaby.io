@@ -9,4 +9,5 @@ public class ReadingDetailsViewModel
     public string Status { get; set; } = string.Empty;
     public int PagesRead { get; set; }
     public int TotalPages { get; set; }
+    public int? Rating { get; set; }
 }

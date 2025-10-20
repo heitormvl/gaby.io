@@ -95,6 +95,25 @@
                             <span asp-validation-for="PagesRead" class="text-danger"></span>
                         </div>
 
+                        <!-- Avaliação -->
+                        <div class="mb-4">
+                            <label asp-for="Rating" class="form-label fw-semibold">
+                                <i class="fas fa-star text-warning me-2"></i>Avaliação (0 a 5 estrelas)
+                            </label>
+                            <div class="star-rating">
+                                <input type="hidden" asp-for="Rating" id="rating-value" />
+                                <div class="stars-container" id="stars-container">
+                                    <i class="far fa-star star" data-value="1"></i>
+                                    <i class="far fa-star star" data-value="2"></i>
+                                    <i class="far fa-star star" data-value="3"></i>
+                                    <i class="far fa-star star" data-value="4"></i>
+                                    <i class="far fa-star star" data-value="5"></i>
+                                </div>
+                                <small class="form-text text-muted d-block mt-2">Clique nas estrelas para avaliar. Clique novamente na mesma estrela para remover a avaliação.</small>
+                            </div>
+                            <span asp-validation-for="Rating" class="text-danger d-block"></span>
+                        </div>
+
                         <!-- Botões de Ação -->
                         <div class="row g-3 mt-4">
                             <div class="col-12 col-md-6">
@@ -130,7 +149,96 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
+    <style>
+        .star-rating {
+            margin: 10px 0;
+        }
+        
+        .stars-container {
+            font-size: 2.5rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .star {
+            color: #ddd;
+            transition: color 0.2s ease;
+            margin: 0 5px;
+        }
+        
+        .star:hover,
+        .star.active {
+            color: #ffc107;
+        }
+        
+        .star.fas {
+            color: #ffc107;
+        }
+    </style>
+    
     <script>
+        // Sistema de avaliação com estrelas
+        const starsContainer = document.getElementById('stars-container');
+        const ratingInput = document.getElementById('rating-value');
+        const stars = document.querySelectorAll('.star');
+        
+        // Inicializar com valor existente (se houver)
+        const currentRating = ratingInput.value ? parseInt(ratingInput.value) : 0;
+        updateStars(currentRating);
+        
+        // Event listener para clique nas estrelas
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                const currentValue = parseInt(ratingInput.value) || 0;
+                
+                // Se clicar na mesma estrela, remove a avaliação
+                if (value === currentValue) {
+                    ratingInput.value = '';
+                    updateStars(0);
+                } else {
+                    ratingInput.value = value;
+                    updateStars(value);
+                }
+            });
+            
+            // Hover effect
+            star.addEventListener('mouseenter', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                highlightStars(value);
+            });
+        });
+        
+        // Restaurar estrelas ao sair do hover
+        starsContainer.addEventListener('mouseleave', function() {
+            const currentValue = parseInt(ratingInput.value) || 0;
+            updateStars(currentValue);
+        });
+        
+        function updateStars(rating) {
+            stars.forEach(star => {
+                const value = parseInt(star.getAttribute('data-value'));
+                if (value <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas', 'active');
+                } else {
+                    star.classList.remove('fas', 'active');
+                    star.classList.add('far');
+                }
+            });
+        }
+        
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                const value = parseInt(star.getAttribute('data-value'));
+                if (value <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+        
         // Mapeamento de bookId para pageCount vindo do Model
         const bookPages = {
             @foreach (var book in Model.AvailableBooks)

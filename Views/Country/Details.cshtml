@@ -72,7 +72,7 @@
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="text-muted mb-1">Total de Autores</h6>
                                     <h4 class="mb-0 fw-bold">
-                                        <span class="badge bg-success fs-6">@Model.Authors.Count</span>
+                                        <span class="badge bg-success fs-6">@(Model.Authors?.Count ?? 0)</span>
                                     </h4>
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    @if (Model.Authors.Any())
+                    @if (Model.Authors != null && Model.Authors.Any())
                     {
                         <!-- Lista Desktop -->
                         <div class="d-none d-md-block">

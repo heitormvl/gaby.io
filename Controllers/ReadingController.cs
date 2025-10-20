@@ -64,7 +64,8 @@ public class ReadingController : Controller
             EndDate = readingModel.EndDate,
             Status = readingModel.Status,
             PagesRead = readingModel.PagesRead,
-            TotalPages = readingModel.Book.PageCount
+            TotalPages = readingModel.Book.PageCount,
+            Rating = readingModel.Rating
         };
 
         return View(reading);
@@ -122,7 +123,7 @@ public class ReadingController : Controller
             PagesRead = model.PagesRead,
             Year = model.StartDate.Year,
             Month = model.StartDate.Month,
-            Rating = 0
+            Rating = model.Rating
         };
 
         _context.Readings.Add(reading);
@@ -152,6 +153,7 @@ public class ReadingController : Controller
             EndDate = readingModel.EndDate,
             Status = readingModel.Status,
             PagesRead = readingModel.PagesRead,
+            Rating = readingModel.Rating,
             AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
                 .Select(b => new BookSelectViewModel
@@ -204,6 +206,7 @@ public class ReadingController : Controller
         readingToUpdate.EndDate = model.EndDate;
         readingToUpdate.Status = model.Status;
         readingToUpdate.PagesRead = model.PagesRead;
+        readingToUpdate.Rating = model.Rating;
         readingToUpdate.Year = model.StartDate.Year;
         readingToUpdate.Month = model.StartDate.Month;
         

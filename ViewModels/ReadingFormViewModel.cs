@@ -28,6 +28,10 @@ public class ReadingFormViewModel
     [Range(0, 10000, ErrorMessage = "Informe um número válido de páginas.")]
     public int PagesRead { get; set; }
 
+    [Display(Name = "Avaliação")]
+    [Range(0, 5, ErrorMessage = "A avaliação deve ser entre 0 e 5.")]
+    public int? Rating { get; set; }
+
     // Lista de livros com informações completas
     public List<BookSelectViewModel> AvailableBooks { get; set; } = new();
 

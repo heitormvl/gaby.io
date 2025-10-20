@@ -44,10 +44,25 @@ public class BookController : Controller
             .Include(b => b.Publisher)
             .Include(b => b.BookGenres)
                 .ThenInclude(bg => bg.Genre)
+            .Include(b => b.Readings)
             .FirstOrDefault(b => b.Id == id);
 
         if (bookModel == null)
             return NotFound();
+
+        // Calcular a nota média das avaliações
+        var ratings = bookModel.Readings
+            .Where(r => r.Rating.HasValue && r.Rating.Value > 0)
+            .Select(r => r.Rating!.Value)
+            .ToList();
+
+        decimal? averageRating = null;
+        int totalRatings = ratings.Count;
+
+        if (totalRatings > 0)
+        {
+            averageRating = Math.Round((decimal)ratings.Average(), 1);
+        }
 
         var book = new BookDetailsViewModel
         {
@@ -57,7 +72,9 @@ public class BookController : Controller
             PublisherName = bookModel.Publisher?.Name,
             GenreNames = bookModel.BookGenres.Select(bg => bg.Genre.Name).ToList(),
             PageCount = bookModel.PageCount,
-            PublicationDate = bookModel.PublicationDate
+            PublicationDate = bookModel.PublicationDate,
+            AverageRating = averageRating,
+            TotalRatings = totalRatings
         };
 
         return View(book);

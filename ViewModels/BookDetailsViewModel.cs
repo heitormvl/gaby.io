@@ -9,5 +9,7 @@ public class BookDetailsViewModel
     public List<string> GenreNames { get; set; } = new();
     public int PageCount { get; set; }
     public DateTime? PublicationDate { get; set; }
+    public decimal? AverageRating { get; set; }
+    public int TotalRatings { get; set; }
 }
                                                                                                                                             

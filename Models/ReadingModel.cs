@@ -19,8 +19,8 @@ public class ReadingModel
     [Range(1, 12)]
     public int? Month { get; set; }
 
-    [Column(TypeName = "decimal(2,1)")]
-    public decimal? Rating { get; set; }
+    [Range(0, 5)]
+    public int? Rating { get; set; }
 
     // Novos campos
     [DataType(DataType.Date)]
