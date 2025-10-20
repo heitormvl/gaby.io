@@ -53,20 +53,20 @@
                         </div>
 
                         <!-- Data de Início -->
-                        <div class="mb-4">
+                        <div class="mb-4" id="startDateDiv">
                             <label asp-for="StartDate" class="form-label fw-semibold">
                                 <i class="fas fa-calendar-alt text-info me-2"></i>Data de Início
                             </label>
-                            <input asp-for="StartDate" type="date" class="form-control form-control-lg" />
+                            <input asp-for="StartDate" type="date" class="form-control form-control-lg" id="startDateInput" />
                             <span asp-validation-for="StartDate" class="text-danger"></span>
                         </div>
 
                         <!-- Data de Término -->
-                        <div class="mb-4">
+                        <div class="mb-4" id="endDateDiv">
                             <label asp-for="EndDate" class="form-label fw-semibold">
                                 <i class="fas fa-calendar-check text-success me-2"></i>Data de Término (opcional)
                             </label>
-                            <input asp-for="EndDate" type="date" class="form-control form-control-lg" />
+                            <input asp-for="EndDate" type="date" class="form-control form-control-lg" id="endDateInput" />
                             <span asp-validation-for="EndDate" class="text-danger"></span>
                         </div>
 
@@ -76,12 +76,17 @@
                                 <i class="fas fa-check-circle text-success me-2"></i>Status da Leitura
                             </label>
                             <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="Status" id="statusProgress" value="Em progresso" autocomplete="off" checked>
+                                <input type="radio" class="btn-check" name="Status" id="statusWished" value="Desejado" autocomplete="off" @(Model.Status == "Desejado" ? "checked" : "")>
+                                <label class="btn btn-outline-info" for="statusWished">
+                                    <i class="fas fa-heart me-1"></i>Desejado
+                                </label>
+
+                                <input type="radio" class="btn-check" name="Status" id="statusProgress" value="Em progresso" autocomplete="off" @(Model.Status == "Em progresso" ? "checked" : "")>
                                 <label class="btn btn-outline-warning" for="statusProgress">
                                     <i class="fas fa-hourglass-half me-1"></i>Em Progresso
                                 </label>
 
-                                <input type="radio" class="btn-check" name="Status" id="statusCompleted" value="Concluída" autocomplete="off">
+                                <input type="radio" class="btn-check" name="Status" id="statusCompleted" value="Concluída" autocomplete="off" @(Model.Status == "Concluída" ? "checked" : "")>
                                 <label class="btn btn-outline-success" for="statusCompleted">
                                     <i class="fas fa-check-circle me-1"></i>Concluída
                                 </label>
@@ -90,7 +95,7 @@
                         </div>
 
                         <!-- Páginas Lidas -->
-                        <div class="mb-4">
+                        <div class="mb-4" id="pagesReadDiv">
                             <label asp-for="PagesRead" class="form-label fw-semibold">
                                 <i class="fas fa-file-alt text-secondary me-2"></i>Páginas Lidas
                             </label>
@@ -99,7 +104,7 @@
                         </div>
 
                         <!-- Avaliação -->
-                        <div class="mb-4">
+                        <div class="mb-4" id="ratingDiv">
                             <label asp-for="Rating" class="form-label fw-semibold">
                                 <i class="fas fa-star text-warning me-2"></i>Avaliação (0 a 5 estrelas)
                             </label>
@@ -281,8 +286,50 @@
             }
         });
 
+        // Função para mostrar/ocultar campos baseado no status
+        function toggleFieldsByStatus() {
+            const statusWished = document.getElementById('statusWished');
+            const statusProgress = document.getElementById('statusProgress');
+            const statusCompleted = document.getElementById('statusCompleted');
+            
+            const startDateDiv = document.getElementById('startDateDiv');
+            const endDateDiv = document.getElementById('endDateDiv');
+            const pagesReadDiv = document.getElementById('pagesReadDiv');
+            const ratingDiv = document.getElementById('ratingDiv');
+            
+            const startDateInput = document.getElementById('startDateInput');
+            const endDateInput = document.getElementById('endDateInput');
+            const pagesReadInput = document.getElementById('PagesRead');
+            const ratingInput = document.getElementById('rating-value');
+
+            if (statusWished && statusWished.checked) {
+                // Ocultar e limpar todos os campos
+                startDateDiv.style.display = 'none';
+                endDateDiv.style.display = 'none';
+                pagesReadDiv.style.display = 'none';
+                ratingDiv.style.display = 'none';
+                
+                startDateInput.value = '';
+                endDateInput.value = '';
+                pagesReadInput.value = '0';
+                ratingInput.value = '';
+                updateStars(0);
+            } else {
+                // Mostrar todos os campos
+                startDateDiv.style.display = 'block';
+                endDateDiv.style.display = 'block';
+                pagesReadDiv.style.display = 'block';
+                ratingDiv.style.display = 'block';
+            }
+        }
+
         // Event listeners para mudança de status
+        document.getElementById('statusWished').addEventListener('change', function() {
+            toggleFieldsByStatus();
+        });
+
         document.getElementById('statusProgress').addEventListener('change', function() {
+            toggleFieldsByStatus();
             if (this.checked) {
                 // Limpar páginas lidas ao mudar para "Em progresso"
                 document.getElementById('PagesRead').value = '';
@@ -290,9 +337,13 @@
         });
 
         document.getElementById('statusCompleted').addEventListener('change', function() {
+            toggleFieldsByStatus();
             if (this.checked) {
                 updatePagesRead();
             }
         });
+
+        // Inicializar o estado dos campos ao carregar a página
+        toggleFieldsByStatus();
     </script>
 }

@@ -13,8 +13,7 @@ public class ReadingFormViewModel
 
     [Display(Name = "Data de início")]
     [DataType(DataType.Date)]
-    [Required(ErrorMessage = "A data de início é obrigatória.")]
-    public DateTime StartDate { get; set; }
+    public DateTime? StartDate { get; set; }
 
     [Display(Name = "Data de término")]
     [DataType(DataType.Date)]

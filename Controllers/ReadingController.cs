@@ -27,7 +27,7 @@ public class ReadingController : Controller
             return RedirectToAction("Login", "Account");
 
         var readings = await _context.Readings
-            .Where(r => r.UserId == userId)
+            .Where(r => r.UserId == userId && r.Status != "Desejado")
             .Include(r => r.Book)
             .Select(r => new ReadingListViewModel
             {
@@ -40,6 +40,29 @@ public class ReadingController : Controller
             .ToListAsync();
 
         return View(readings);
+    }
+
+    public async Task<IActionResult> Wishlist()
+    {
+        var userId = _userManager.GetUserId(User);
+        
+        if (string.IsNullOrEmpty(userId))
+            return RedirectToAction("Login", "Account");
+
+        var wishlist = await _context.Readings
+            .Where(r => r.UserId == userId && r.Status == "Desejado")
+            .Include(r => r.Book)
+            .Select(r => new ReadingListViewModel
+            {
+                Id = r.Id,
+                BookTitle = r.Book.Title,
+                StartDate = r.StartDate ?? DateTime.MinValue,
+                EndDate = r.EndDate,
+                Status = r.Status
+            })
+            .ToListAsync();
+
+        return View(wishlist);
     }
 
     public async Task<IActionResult> Details(int id)
@@ -71,10 +94,11 @@ public class ReadingController : Controller
         return View(reading);
     }
 
-    public async Task<IActionResult> Create()
+    public async Task<IActionResult> Create(string? status)
     {
         var model = new ReadingFormViewModel
         {
+            Status = status ?? "Em progresso",
             StartDate = DateTime.Now,
             AvailableBooks = await _context.Books
                 .OrderBy(b => b.Title)
@@ -117,19 +141,19 @@ public class ReadingController : Controller
         {
             BookId = model.BookId,
             UserId = userId,
-            StartDate = model.StartDate,
-            EndDate = model.EndDate,
+            StartDate = model.Status == "Desejado" ? null : model.StartDate,
+            EndDate = model.Status == "Desejado" ? null : model.EndDate,
             Status = model.Status,
-            PagesRead = model.PagesRead,
-            Year = model.StartDate.Year,
-            Month = model.StartDate.Month,
-            Rating = model.Rating
+            PagesRead = model.Status == "Desejado" ? 0 : model.PagesRead,
+            Year = model.Status == "Desejado" ? null : model.StartDate?.Year,
+            Month = model.Status == "Desejado" ? null : model.StartDate?.Month,
+            Rating = model.Status == "Desejado" ? null : model.Rating
         };
 
         _context.Readings.Add(reading);
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Index));
+        return model.Status == "Desejado" ? RedirectToAction(nameof(Wishlist)) : RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(int id)
@@ -202,17 +226,17 @@ public class ReadingController : Controller
             return NotFound();
 
         readingToUpdate.BookId = model.BookId;
-        readingToUpdate.StartDate = model.StartDate;
-        readingToUpdate.EndDate = model.EndDate;
+        readingToUpdate.StartDate = model.Status == "Desejado" ? null : model.StartDate;
+        readingToUpdate.EndDate = model.Status == "Desejado" ? null : model.EndDate;
         readingToUpdate.Status = model.Status;
-        readingToUpdate.PagesRead = model.PagesRead;
-        readingToUpdate.Rating = model.Rating;
-        readingToUpdate.Year = model.StartDate.Year;
-        readingToUpdate.Month = model.StartDate.Month;
+        readingToUpdate.PagesRead = model.Status == "Desejado" ? 0 : model.PagesRead;
+        readingToUpdate.Rating = model.Status == "Desejado" ? null : model.Rating;
+        readingToUpdate.Year = model.Status == "Desejado" ? null : model.StartDate?.Year;
+        readingToUpdate.Month = model.Status == "Desejado" ? null : model.StartDate?.Month;
         
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Details), new { id = model.Id });
+        return model.Status == "Desejado" ? RedirectToAction(nameof(Wishlist)) : RedirectToAction(nameof(Details), new { id = model.Id });
     }
 
     public async Task<IActionResult> Delete(int id)
