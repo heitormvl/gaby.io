@@ -21,17 +21,38 @@ builder.Services
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequiredLength = 4;
     })
+    .AddRoles<IdentityRole<string>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
 // Custom ClaimsPrincipalFactory para adicionar DisplayName aos claims
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<UserModel>, Gaby.io.Factories.UserClaimsPrincipalFactory>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Admin/AccessDenied";
+});
+
 builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 
 // Build da aplicação
 var app = builder.Build();
+
+// Seed de roles e admin
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await Gaby.io.Data.RoleSeed.SeedRolesAndAdminAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Erro ao criar roles e admin inicial");
+    }
+}
 
 // Pipeline de middleware
 if (!app.Environment.IsDevelopment())
