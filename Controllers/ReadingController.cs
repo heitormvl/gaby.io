@@ -31,6 +31,8 @@ public class ReadingController : Controller
         var readings = await _context.Readings
             .Where(r => r.UserId == userId && r.Status != "Desejado")
             .Include(r => r.Book)
+            .OrderBy(r => r.StartDate != null ? 1 : 0)
+            .ThenBy(r => r.StartDate)
             .Select(r => new ReadingListViewModel
             {
                 Id = r.Id,
@@ -39,7 +41,6 @@ public class ReadingController : Controller
                 EndDate = r.EndDate,
                 Status = r.Status
             })
-            .OrderBy(r => r.StartDate)
             .ToListAsync();
 
         return View(readings);
