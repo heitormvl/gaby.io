@@ -56,13 +56,17 @@ gaby.io/
 ├── Data/              # Contexto e seeds
 │   ├── RoleSeed.cs    # ⭐ Seed de roles
 │   └── ...
-└── dev/               # Documentação
-    ├── admin-quick-start.md
-    ├── admin-management.md
-    └── ...
+└── dev/               # 📚 Documentação completa
+    ├── README.md                  # Índice da documentação
+    ├── getting-started/           # Guias de início
+    ├── architecture/              # Arquitetura do projeto
+    ├── guides/                    # Guias de funcionalidades
+    └── reference/                 # Referência técnica
 ```
 
 ## 🚀 Como Executar
+
+### Início Rápido
 
 1. Clone o repositório
 2. Configure a string de conexão em `appsettings.json`
@@ -70,6 +74,20 @@ gaby.io/
 4. Execute o projeto: `dotnet run`
 5. Crie o primeiro admin seguindo `dev/admin-quick-start.md`
 
-## 📝 Licença
+📖 **Guia Completo:** Consulte [`dev/getting-started/quick-start.md`](dev/getting-started/quick-start.md) para instruções detalhadas
+
+## � Documentação
+
+Documentação completa disponível em [`dev/`](dev/):
+
+- **[Guia de Início Rápido](dev/getting-started/quick-start.md)** - Execute o projeto em 5 minutos
+- **[Arquitetura](dev/architecture/project-structure.md)** - Estrutura e padrões do código
+- **[Sistema de Autenticação](dev/guides/authentication.md)** - Identity e autorização
+- **[Referência de Controllers](dev/reference/controllers.md)** - Documentação técnica completa
+- **[Stack Tecnológica](dev/stack.md)** - Tecnologias utilizadas
+
+📖 **Índice completo:** [`dev/README.md`](dev/README.md)
+
+## �📝 Licença
 
 Este projeto foi desenvolvido para fins educacionais.
