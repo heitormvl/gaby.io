@@ -18,7 +18,7 @@ Visão completa das tecnologias utilizadas no **gaby.io**.
                    │ Entity Framework Core
                    ↓
 ┌─────────────────────────────────────────────┐
-│           SQL Server Database               │
+│           PostgreSQL Database                │
 │  Identity Tables + Application Tables       │
 └─────────────────────────────────────────────┘
 ```
@@ -80,7 +80,7 @@ Visão completa das tecnologias utilizadas no **gaby.io**.
 ```xml
 <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
 <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
 <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
 <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
 ```
@@ -91,8 +91,9 @@ Visão completa das tecnologias utilizadas no **gaby.io**.
 ## 🗄️ Banco de Dados
 
 ### SGBD
-- **SQL Server:** 2019+ (2022 recomendado)
-- **Alternativas:** SQL Server Express (gratuito)
+- **PostgreSQL:** 15+ (hospedado via Supabase)
+- **Provider EF Core:** Npgsql.EntityFrameworkCore.PostgreSQL
+- **Desenvolvimento local:** PostgreSQL via Docker
 
 ### Estrutura
 - **Tabelas de Identity:**
@@ -243,7 +244,8 @@ gaby.io/
 ### Ferramentas
 - [Visual Studio 2022](https://visualstudio.microsoft.com/)
 - [VS Code](https://code.visualstudio.com/)
-- [SQL Server Management Studio](https://learn.microsoft.com/sql/ssms/)
+- [pgAdmin](https://www.pgadmin.org/)
+- [Supabase](https://supabase.com/)
 
 ## 📌 Versões
 
@@ -258,4 +260,4 @@ gaby.io/
 
 ---
 
-**Última atualização:** 31/10/2025
+**Última atualização:** 06/08/2026

@@ -56,3 +56,6 @@ nunit-*.xml
 # IDEs
 .vs/
 .vscode/
+
+# Supabase CLI local state
+supabase/.temp/

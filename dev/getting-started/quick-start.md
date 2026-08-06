@@ -7,7 +7,7 @@ Este guia vai te ajudar a colocar o **gaby.io** em execução rapidamente.
 Antes de começar, certifique-se de ter instalado:
 
 - ✅ [.NET SDK 8.0+](https://dotnet.microsoft.com/download)
-- ✅ [SQL Server 2019+](https://www.microsoft.com/sql-server) (ou SQL Server Express)
+- ✅ [Docker](https://www.docker.com/) (para rodar o PostgreSQL localmente) ou uma conta [Supabase](https://supabase.com/)
 - ✅ [Visual Studio 2022](https://visualstudio.microsoft.com/) ou [VS Code](https://code.visualstudio.com/)
 - ✅ [Git](https://git-scm.com/)
 

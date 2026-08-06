@@ -55,9 +55,9 @@ Bem-vindo à documentação completa do **gaby.io**, um sistema de gerenciamento
 
 - **ASP.NET Core:** 8.0
 - **Entity Framework Core:** 8.0
-- **SQL Server:** 2019+
+- **PostgreSQL:** 15+ (Supabase)
 - **Bootstrap:** 5.3
 
 ---
 
-**Última atualização:** 31/10/2025
+**Última atualização:** 06/08/2026

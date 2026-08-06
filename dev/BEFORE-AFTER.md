@@ -146,7 +146,7 @@ Cobertura Total: 100% ✨
 - CLI tools
 
 ## 🗄️ Banco de Dados
-- SQL Server 2019+
+- PostgreSQL 15+ (Supabase)
 - Estrutura completa (Identity + App)
 - 7 migrations documentadas
 

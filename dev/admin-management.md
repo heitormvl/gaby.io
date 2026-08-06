@@ -14,32 +14,25 @@ Edite o arquivo `Data/RoleSeed.cs` e descomente as linhas que criam o usuário a
 ### Opção 2: Via banco de dados (manual)
 
 1. Registre um usuário normalmente pela interface de registro
-2. Conecte-se ao banco de dados SQL Server
+2. Conecte-se ao banco de dados PostgreSQL (via Supabase SQL Editor, `psql` ou pgAdmin)
 3. Execute o seguinte script SQL, substituindo `[EMAIL_DO_USUARIO]` pelo email do usuário:
 
 ```sql
 -- 1. Criar a role Admin (se não existir)
-IF NOT EXISTS (SELECT * FROM AspNetRoles WHERE Name = 'Admin')
-BEGIN
-    INSERT INTO AspNetRoles (Id, Name, NormalizedName, ConcurrencyStamp)
-    VALUES (NEWID(), 'Admin', 'ADMIN', NEWID())
-END
+INSERT INTO "AspNetRoles" ("Id", "Name", "NormalizedName", "ConcurrencyStamp")
+SELECT gen_random_uuid()::text, 'Admin', 'ADMIN', gen_random_uuid()::text
+WHERE NOT EXISTS (SELECT 1 FROM "AspNetRoles" WHERE "Name" = 'Admin');
 
 -- 2. Adicionar o usuário à role Admin
-DECLARE @UserId NVARCHAR(450)
-DECLARE @RoleId NVARCHAR(450)
-
-SELECT @UserId = Id FROM AspNetUsers WHERE Email = '[EMAIL_DO_USUARIO]'
-SELECT @RoleId = Id FROM AspNetRoles WHERE Name = 'Admin'
-
-IF @UserId IS NOT NULL AND @RoleId IS NOT NULL
-BEGIN
-    IF NOT EXISTS (SELECT * FROM AspNetUserRoles WHERE UserId = @UserId AND RoleId = @RoleId)
-    BEGIN
-        INSERT INTO AspNetUserRoles (UserId, RoleId)
-        VALUES (@UserId, @RoleId)
-    END
-END
+INSERT INTO "AspNetUserRoles" ("UserId", "RoleId")
+SELECT u."Id", r."Id"
+FROM "AspNetUsers" u, "AspNetRoles" r
+WHERE u."Email" = '[EMAIL_DO_USUARIO]'
+  AND r."Name" = 'Admin'
+  AND NOT EXISTS (
+      SELECT 1 FROM "AspNetUserRoles" ur
+      WHERE ur."UserId" = u."Id" AND ur."RoleId" = r."Id"
+  );
 ```
 
 ## Acessando o painel administrativo

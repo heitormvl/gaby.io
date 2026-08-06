@@ -7,15 +7,15 @@
 **Opção mais rápida - Via SQL:**
 
 1. Registre um usuário normalmente no site
-2. Abra o SQL Server Management Studio (ou qualquer cliente SQL)
+2. Abra o painel SQL do Supabase (ou o `psql`/pgAdmin apontando para o Postgres local)
 3. Abra o arquivo `dev/create-first-admin.sql`
-4. Altere a linha `DECLARE @UserEmail NVARCHAR(256) = '[EMAIL_DO_USUARIO]'`
+4. Altere a linha `email_do_usuario TEXT := '[EMAIL_DO_USUARIO]';`
 5. Execute o script
 6. Pronto! O usuário agora é admin
 
 **Exemplo:**
 ```sql
-DECLARE @UserEmail NVARCHAR(256) = 'seu@email.com' -- ALTERE AQUI
+email_do_usuario TEXT := 'seu@email.com'; -- ALTERE AQUI
 ```
 
 ### 2️⃣ Acessar o Painel Admin
@@ -43,17 +43,17 @@ Na tela de gerenciamento de usuários:
 
 ## 🔍 Verificar Admins no Banco
 
-Execute no SQL Server:
+Execute no PostgreSQL:
 
 ```sql
-SELECT 
-    u.Email,
-    u.DisplayName,
-    r.Name as Role
-FROM AspNetUsers u
-INNER JOIN AspNetUserRoles ur ON u.Id = ur.UserId
-INNER JOIN AspNetRoles r ON ur.RoleId = r.Id
-WHERE r.Name = 'Admin'
+SELECT
+    u."Email",
+    u."DisplayName",
+    r."Name" as "Role"
+FROM "AspNetUsers" u
+INNER JOIN "AspNetUserRoles" ur ON u."Id" = ur."UserId"
+INNER JOIN "AspNetRoles" r ON ur."RoleId" = r."Id"
+WHERE r."Name" = 'Admin'
 ```
 
 ## 🆘 Problemas Comuns

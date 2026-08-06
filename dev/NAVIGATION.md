@@ -134,7 +134,7 @@ Você quer contribuir ou modificar o código:
 | **Roles** | `guides/authentication.md` |
 | **Routes** | `reference/routes.md` |
 | **Security** | `guides/authentication.md`, `stack.md` |
-| **SQL Server** | `stack.md`, `getting-started/environment-setup.md` |
+| **PostgreSQL** | `stack.md`, `getting-started/environment-setup.md` |
 | **ViewModels** | `architecture/patterns.md` |
 
 ---
