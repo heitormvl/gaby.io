@@ -24,7 +24,7 @@
     </div>
 
     <!-- Informações da Editora -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-12 col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-0 py-3">
@@ -33,7 +33,24 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-4">
+                    <!-- Mobile: lista agrupada estilo iOS -->
+                    <div class="ios-list d-sm-none">
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Nome</span>
+                                <span class="ios-detail-value">@Model.Name</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Total de Livros</span>
+                                <span class="ios-detail-value">@(Model.Books?.Count ?? 0)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop: grade com ícones -->
+                    <div class="row g-4 d-none d-sm-flex">
                         <div class="col-12 col-md-6">
                             <div class="d-flex align-items-start">
                                 <div class="flex-shrink-0">
@@ -106,7 +123,7 @@
                     @if (Model.Books != null && Model.Books.Any())
                     {
                         <!-- Lista Desktop -->
-                        <div class="d-none d-md-block">
+                        <div class="d-none d-sm-block">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
@@ -142,20 +159,16 @@
                         </div>
 
                         <!-- Lista Mobile -->
-                        <div class="d-md-none">
+                        <div class="ios-list d-sm-none">
                             @for (int i = 0; i < Model.Books.Count; i++)
                             {
-                                <div class="card border-0 bg-light mb-2">
-                                    <div class="card-body py-2 px-3">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="d-flex align-items-center">
-                                                <span class="badge bg-primary me-2">@(i + 1)</span>
-                                                <i class="fas fa-book text-primary me-2"></i>
-                                                <strong>@Model.Books[i]</strong>
-                                            </div>
-                                            <a href="#" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
+                                <div class="ios-list-row">
+                                    <div class="ios-list-row-content">
+                                        <div class="ios-list-row-icon">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                        <div class="ios-list-row-text">
+                                            <div class="ios-list-row-title">@Model.Books[i]</div>
                                         </div>
                                     </div>
                                 </div>

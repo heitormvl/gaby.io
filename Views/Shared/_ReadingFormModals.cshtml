@@ -1,205 +1,202 @@
-<!-- Modal Adicionar Livro -->
-<div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="bookModalLabel">
-                    <i class="fas fa-book me-2"></i>Adicionar Novo Livro
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Painel Adicionar Livro -->
+<div class="offcanvas offcanvas-bottom ios-sheet" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="bookModalLabel">
+            <i class="fas fa-book me-2"></i>Adicionar Novo Livro
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="bookModalErrors" class="alert alert-danger d-none"></div>
+
+        <!-- Busca no Google Books -->
+        <div class="mb-4">
+            <label class="form-label fw-semibold">
+                <i class="fas fa-search text-primary me-2"></i>Buscar no Google Books
+            </label>
+            <input type="text" id="googleBooksQuery" class="form-control form-control-lg" placeholder="Digite o título do livro..." />
+            <div id="googleBooksResults" class="list-group mt-2"></div>
+            <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>Opcional: comece a digitar para buscar e preencher os campos abaixo automaticamente.
+            </small>
+        </div>
+
+        <form id="bookForm">
+            <!-- Título -->
+            <div class="mb-3">
+                <label for="bookTitle" class="form-label fw-semibold">
+                    <i class="fas fa-book text-primary me-2"></i>Título do Livro <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="bookTitle" name="Title" required maxlength="200" />
             </div>
-            <div class="modal-body">
-                <div id="bookModalErrors" class="alert alert-danger d-none"></div>
-                <form id="bookForm">
-                    <!-- Título -->
-                    <div class="mb-3">
-                        <label for="bookTitle" class="form-label fw-semibold">
-                            <i class="fas fa-book text-primary me-2"></i>Título do Livro <span class="text-danger">*</span>
-                        </label>
-                        <input type="text" class="form-control" id="bookTitle" name="Title" required maxlength="200" />
-                    </div>
 
-                    <!-- Autor -->
-                    <div class="mb-3">
-                        <label for="bookAuthor" class="form-label fw-semibold">
-                            <i class="fas fa-user-edit text-info me-2"></i>Autor <span class="text-danger">*</span>
-                        </label>
-                        <div class="input-group">
-                            <select class="form-select" id="bookAuthor" name="AuthorId" required>
-                                <option value="">-- Selecione um autor --</option>
-                            </select>
-                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#authorModal" title="Adicionar novo autor">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Editora -->
-                    <div class="mb-3">
-                        <label for="bookPublisher" class="form-label fw-semibold">
-                            <i class="fas fa-building text-secondary me-2"></i>Editora (opcional)
-                        </label>
-                        <div class="input-group">
-                            <select class="form-select" id="bookPublisher" name="PublisherId">
-                                <option value="">-- Selecione uma editora --</option>
-                            </select>
-                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#publisherModal" title="Adicionar nova editora">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Gêneros -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <label class="form-label fw-semibold mb-0">
-                                <i class="fas fa-tags text-secondary me-2"></i>Gêneros (opcional)
-                            </label>
-                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#genreModal" title="Adicionar novo gênero">
-                                <i class="fas fa-plus me-1"></i>Novo Gênero
-                            </button>
-                        </div>
-                        <div class="border rounded p-3" id="bookGenresContainer" style="max-height: 200px; overflow-y: auto;">
-                            <!-- Gêneros serão carregados dinamicamente -->
-                        </div>
-                        <small class="text-muted">
-                            <i class="fas fa-info-circle me-1"></i>Você pode selecionar múltiplos gêneros
-                        </small>
-                    </div>
-
-                    <!-- Páginas -->
-                    <div class="mb-3">
-                        <label for="bookPageCount" class="form-label fw-semibold">
-                            <i class="fas fa-file-alt text-success me-2"></i>Número de Páginas <span class="text-danger">*</span>
-                        </label>
-                        <input type="number" class="form-control" id="bookPageCount" name="PageCount" required min="1" max="10000" />
-                    </div>
-
-                    <!-- Data de Publicação -->
-                    <div class="mb-3">
-                        <label for="bookPublicationDate" class="form-label fw-semibold">
-                            <i class="fas fa-calendar-alt text-warning me-2"></i>Data de Publicação
-                        </label>
-                        <input type="date" class="form-control" id="bookPublicationDate" name="PublicationDate" />
-                    </div>
-                </form>
+            <!-- Autor -->
+            <div class="mb-3">
+                <label for="bookAuthor" class="form-label fw-semibold">
+                    <i class="fas fa-user-edit text-info me-2"></i>Autor <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                    <select class="form-select" id="bookAuthor" name="AuthorId" required>
+                        <option value="" class="text-muted">Selecione um autor</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#authorModal" title="Adicionar novo autor">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
-                <button type="button" class="btn btn-primary" id="saveBookBtn">
-                    <i class="fas fa-save me-1"></i>Salvar Livro
-                </button>
+
+            <!-- Editora -->
+            <div class="mb-3">
+                <label for="bookPublisher" class="form-label fw-semibold">
+                    <i class="fas fa-building text-secondary me-2"></i>Editora (opcional)
+                </label>
+                <div class="input-group">
+                    <select class="form-select" id="bookPublisher" name="PublisherId">
+                        <option value="" class="text-muted">Selecione uma editora</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#publisherModal" title="Adicionar nova editora">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
             </div>
+
+            <!-- Gêneros -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label fw-semibold mb-0">
+                        <i class="fas fa-tags text-secondary me-2"></i>Gêneros (opcional)
+                    </label>
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="offcanvas" data-bs-target="#genreModal" title="Adicionar novo gênero">
+                        <i class="fas fa-plus me-1"></i>Novo Gênero
+                    </button>
+                </div>
+                <div class="border rounded p-3" id="bookGenresContainer" style="max-height: 200px; overflow-y: auto;">
+                    <!-- Gêneros serão carregados dinamicamente -->
+                </div>
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>Você pode selecionar múltiplos gêneros
+                </small>
+            </div>
+
+            <!-- Páginas -->
+            <div class="mb-3">
+                <label for="bookPageCount" class="form-label fw-semibold">
+                    <i class="fas fa-file-alt text-success me-2"></i>Número de Páginas <span class="text-danger">*</span>
+                </label>
+                <input type="number" class="form-control" id="bookPageCount" name="PageCount" required min="1" max="10000" />
+            </div>
+
+            <!-- Data de Publicação -->
+            <div class="mb-3">
+                <label for="bookPublicationDate" class="form-label fw-semibold">
+                    <i class="fas fa-calendar-alt text-warning me-2"></i>Data de Publicação
+                </label>
+                <input type="date" class="form-control" id="bookPublicationDate" name="PublicationDate" />
+            </div>
+        </form>
+        <div class="d-flex gap-2 mt-4">
+            <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="offcanvas">
+                <i class="fas fa-times me-1"></i>Cancelar
+            </button>
+            <button type="button" class="btn btn-primary flex-fill" id="saveBookBtn">
+                <i class="fas fa-save me-1"></i>Salvar
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Modal Adicionar Autor -->
-<div class="modal fade" id="authorModal" tabindex="-1" aria-labelledby="authorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="authorModalLabel">
-                    <i class="fas fa-user-plus me-2"></i>Adicionar Novo Autor
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Painel Adicionar Autor -->
+<div class="offcanvas offcanvas-bottom ios-sheet" id="authorModal" tabindex="-1" aria-labelledby="authorModalLabel" aria-hidden="true">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="authorModalLabel">
+            <i class="fas fa-user-plus me-2"></i>Adicionar Novo Autor
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="authorModalErrors" class="alert alert-danger d-none"></div>
+        <form id="authorForm">
+            <div class="mb-3">
+                <label for="authorName" class="form-label fw-semibold">Nome do Autor <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="authorName" name="Name" required maxlength="100" />
             </div>
-            <div class="modal-body">
-                <div id="authorModalErrors" class="alert alert-danger d-none"></div>
-                <form id="authorForm">
-                    <div class="mb-3">
-                        <label for="authorName" class="form-label fw-semibold">Nome do Autor <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="authorName" name="Name" required maxlength="100" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="authorGender" class="form-label fw-semibold">Gênero <span class="text-danger">*</span></label>
-                        <select class="form-select" id="authorGender" name="Gender" required>
-                            <option value="">-- Selecione --</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Feminino</option>
-                            <option value="N">Não-binário</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="authorCountry" class="form-label fw-semibold">País de Origem</label>
-                        <select class="form-select" id="authorCountry" name="CountryId">
-                            <option value="">-- Selecione --</option>
-                        </select>
-                    </div>
-                </form>
+            <div class="mb-3">
+                <label for="authorGender" class="form-label fw-semibold">Gênero <span class="text-danger">*</span></label>
+                <select class="form-select" id="authorGender" name="Gender" required>
+                    <option value="" class="text-muted">Selecione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="N">Não-binário</option>
+                </select>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
-                <button type="button" class="btn btn-primary" id="saveAuthorBtn">
-                    <i class="fas fa-save me-1"></i>Salvar Autor
-                </button>
+            <div class="mb-3">
+                <label for="authorCountry" class="form-label fw-semibold">País de Origem</label>
+                <select class="form-select" id="authorCountry" name="CountryId">
+                    <option value="" class="text-muted">Selecione</option>
+                </select>
             </div>
+        </form>
+        <div class="d-flex gap-2 mt-4">
+            <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="offcanvas">
+                <i class="fas fa-times me-1"></i>Cancelar
+            </button>
+            <button type="button" class="btn btn-primary flex-fill" id="saveAuthorBtn">
+                <i class="fas fa-save me-1"></i>Salvar
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Modal Adicionar Editora -->
-<div class="modal fade" id="publisherModal" tabindex="-1" aria-labelledby="publisherModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="publisherModalLabel">
-                    <i class="fas fa-building me-2"></i>Adicionar Nova Editora
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Painel Adicionar Editora -->
+<div class="offcanvas offcanvas-bottom ios-sheet" id="publisherModal" tabindex="-1" aria-labelledby="publisherModalLabel" aria-hidden="true">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="publisherModalLabel">
+            <i class="fas fa-building me-2"></i>Adicionar Nova Editora
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="publisherModalErrors" class="alert alert-danger d-none"></div>
+        <form id="publisherForm">
+            <div class="mb-3">
+                <label for="publisherName" class="form-label fw-semibold">Nome da Editora <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="publisherName" name="Name" required maxlength="100" />
             </div>
-            <div class="modal-body">
-                <div id="publisherModalErrors" class="alert alert-danger d-none"></div>
-                <form id="publisherForm">
-                    <div class="mb-3">
-                        <label for="publisherName" class="form-label fw-semibold">Nome da Editora <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="publisherName" name="Name" required maxlength="100" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
-                <button type="button" class="btn btn-primary" id="savePublisherBtn">
-                    <i class="fas fa-save me-1"></i>Salvar Editora
-                </button>
-            </div>
+        </form>
+        <div class="d-flex gap-2 mt-4">
+            <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="offcanvas">
+                <i class="fas fa-times me-1"></i>Cancelar
+            </button>
+            <button type="button" class="btn btn-primary flex-fill" id="savePublisherBtn">
+                <i class="fas fa-save me-1"></i>Salvar
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Modal Adicionar Gênero -->
-<div class="modal fade" id="genreModal" tabindex="-1" aria-labelledby="genreModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="genreModalLabel">
-                    <i class="fas fa-tags me-2"></i>Adicionar Novo Gênero
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Painel Adicionar Gênero -->
+<div class="offcanvas offcanvas-bottom ios-sheet" id="genreModal" tabindex="-1" aria-labelledby="genreModalLabel" aria-hidden="true">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="genreModalLabel">
+            <i class="fas fa-tags me-2"></i>Adicionar Novo Gênero
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="genreModalErrors" class="alert alert-danger d-none"></div>
+        <form id="genreForm">
+            <div class="mb-3">
+                <label for="genreName" class="form-label fw-semibold">Nome do Gênero <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="genreName" name="Name" required maxlength="50" />
             </div>
-            <div class="modal-body">
-                <div id="genreModalErrors" class="alert alert-danger d-none"></div>
-                <form id="genreForm">
-                    <div class="mb-3">
-                        <label for="genreName" class="form-label fw-semibold">Nome do Gênero <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="genreName" name="Name" required maxlength="50" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
-                </button>
-                <button type="button" class="btn btn-primary" id="saveGenreBtn">
-                    <i class="fas fa-save me-1"></i>Salvar Gênero
-                </button>
-            </div>
+        </form>
+        <div class="d-flex gap-2 mt-4">
+            <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="offcanvas">
+                <i class="fas fa-times me-1"></i>Cancelar
+            </button>
+            <button type="button" class="btn btn-primary flex-fill" id="saveGenreBtn">
+                <i class="fas fa-save me-1"></i>Salvar
+            </button>
         </div>
     </div>
 </div>

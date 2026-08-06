@@ -38,20 +38,19 @@
                             <strong>Verifique os erros abaixo:</strong>
                         </div>
 
-                        <!-- Nome de Exibição -->
-                        <div class="mb-4">
-                            <label asp-for="DisplayName" class="form-label fw-semibold">
-                                <i class="fas fa-user text-primary me-2"></i>Nome de Exibição
-                            </label>
-                            <input asp-for="DisplayName" 
-                                   type="text" 
-                                   class="form-control form-control-lg" 
-                                   placeholder="Seu nome de exibição"
-                                   autofocus />
-                            <span asp-validation-for="DisplayName" class="invalid-feedback d-block"></span>
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>Este nome será exibido em seu perfil
-                            </small>
+                        <div class="ios-form-list">
+                            <!-- Nome de Exibição -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="DisplayName" class="form-label fw-semibold">
+                                    <i class="fas fa-user text-primary me-2"></i>Nome de Exibição
+                                </label>
+                                <input asp-for="DisplayName"
+                                       type="text"
+                                       class="form-control form-control-lg"
+                                       placeholder="Seu nome de exibição"
+                                       autofocus />
+                                <span asp-validation-for="DisplayName" class="invalid-feedback d-block"></span>
+                            </div>
                         </div>
 
                         <!-- Botões -->

@@ -27,3 +27,544 @@ body {
   --bs-link-color: #6b10f3;
   --bs-link-hover-color: #5b00e0;
 }
+
+/* Desktop spacing for form fields wrapped by .ios-form-row (mirrors Bootstrap's mb-4);
+   overridden to 0 on mobile where the grouped-list container's row separators take over. */
+.form-field-group {
+  margin-bottom: 1.5rem;
+}
+
+select.form-select:has(option[value=""]:checked) {
+  color: #6c757d;
+}
+
+/* ===== Mobile bottom tab bar (iOS 26 / One UI 8.5 inspired) ===== */
+.mobile-tabbar {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  z-index: 1030;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 4px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(15, 15, 15, 0.16), 0 1px 2px rgba(15, 15, 15, 0.08);
+}
+
+.mobile-tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1 1 0;
+  padding: 6px 2px;
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mobile-tabbar-item i {
+  font-size: 1.05rem;
+  padding: 5px 14px;
+  border-radius: 999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mobile-tabbar-item span {
+  margin-top: 1px;
+}
+
+.mobile-tabbar-item.active {
+  color: var(--bs-primary);
+}
+
+.mobile-tabbar-item.active i {
+  background: rgba(107, 16, 243, 0.14);
+  color: var(--bs-primary);
+}
+
+@media (max-width: 575.98px) {
+  .mobile-hide-when-authed {
+    display: none !important;
+  }
+
+  body.has-mobile-tabbar {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+  }
+
+  body.has-mobile-tabbar .footer {
+    display: none;
+  }
+}
+
+@media (min-width: 576px) {
+  .mobile-tabbar {
+    display: none !important;
+  }
+}
+
+/* "Mais" popup: floating glass card matching the tab bar's width and bottom position */
+.mobile-more-sheet {
+  left: 12px;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  width: auto;
+  height: auto;
+  max-height: 70vh;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.82);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(15, 15, 15, 0.2);
+}
+
+.mobile-more-sheet .offcanvas-header {
+  padding: 18px 12px 8px 22px;
+}
+
+.mobile-more-sheet .offcanvas-title {
+  font-weight: 600;
+}
+
+.mobile-more-sheet .btn-close {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
+  background-size: 14px auto;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-more-sheet .offcanvas-body {
+  padding: 6px 12px 18px 22px;
+}
+
+.mobile-more-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  color: #212529;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 12px;
+}
+
+.mobile-more-link:hover,
+.mobile-more-link:active {
+  background: rgba(107, 16, 243, 0.08);
+  color: var(--bs-primary);
+}
+
+.mobile-more-link i {
+  width: 20px;
+  text-align: center;
+  color: var(--bs-primary);
+}
+
+.mobile-more-link-danger {
+  color: #dc3545;
+}
+
+.mobile-more-link-danger i {
+  color: #dc3545;
+}
+
+/* ===== Mobile top bar: glass, fading edge (iOS-style scroll-edge material) ===== */
+@media (max-width: 575.98px) {
+  header .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    margin-bottom: 0 !important;
+    padding-top: calc(0.5rem + env(safe-area-inset-top));
+    padding-bottom: 6px;
+    background: rgba(255, 255, 255, 0.72) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: none !important;
+    box-shadow: none !important;
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  }
+
+  header .navbar .container-fluid {
+    justify-content: center;
+  }
+
+  header .navbar .navbar-brand {
+    color: #1a1a1a !important;
+    margin-right: 0;
+  }
+
+  body {
+    padding-top: calc(48px + env(safe-area-inset-top));
+  }
+}
+
+/* =========================================================================
+   Apple HIG-inspired design system (mobile only)
+   ========================================================================= */
+@media (max-width: 575.98px) {
+  :root {
+    --ios-bg: #f2f2f7;
+    --ios-separator: rgba(60, 60, 67, 0.29);
+    --ios-label-secondary: #8e8e93;
+    --ios-destructive: #ff3b30;
+    --ios-radius: 14px;
+    --ios-radius-lg: 20px;
+  }
+
+  body {
+    background: var(--ios-bg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Large-title style page headers */
+  main h1.display-5 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1a1a1a !important;
+    display: flex;
+    align-items: center;
+  }
+
+  main h1.display-5 i {
+    display: none;
+  }
+
+  main .lead {
+    font-size: 0.9rem;
+    color: var(--ios-label-secondary) !important;
+  }
+
+  /* Cards */
+  .card {
+    border-radius: var(--ios-radius) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+    border: none !important;
+  }
+
+  .card-header {
+    background: transparent !important;
+    font-weight: 600;
+  }
+
+  /* Buttons: rounded, semibold, tinted fills (color-preserving per Bootstrap variant) */
+  .btn {
+    border-radius: 12px !important;
+    font-weight: 600;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .btn-lg {
+    border-radius: 14px !important;
+  }
+
+  .btn-sm {
+    border-radius: 9px !important;
+  }
+
+  .btn-outline-primary,
+  .btn-outline-secondary,
+  .btn-outline-warning,
+  .btn-outline-danger,
+  .btn-outline-info,
+  .btn-outline-success {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+  }
+
+  /* Badges */
+  .badge {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.4em 0.7em;
+  }
+
+  /* Alerts */
+  .alert {
+    border-radius: var(--ios-radius) !important;
+    border: none !important;
+  }
+
+  /* Toggle switches (Bootstrap's own .form-switch, tinted to the app's accent) */
+  .form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.4em;
+  }
+
+  .form-switch .form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+
+  /* ===== Grouped list (iOS Settings/Mail-style rows) ===== */
+  .ios-list {
+    background: #fff;
+    border-radius: var(--ios-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .ios-list-row {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--ios-separator);
+  }
+
+  .ios-list-row:last-child {
+    border-bottom: none;
+  }
+
+  .ios-list-row-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .ios-swipe-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    background: var(--ios-destructive);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .ios-list-row-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    color: #1a1a1a;
+    text-decoration: none;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease;
+    touch-action: pan-y;
+  }
+
+  .ios-list-row-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bs-primary);
+    background: color-mix(in srgb, var(--bs-primary) 12%, transparent);
+  }
+
+  .ios-list-row-text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ios-list-row-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ios-list-row-subtitle {
+    font-size: 0.8rem;
+    color: var(--ios-label-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ios-list-row-chevron {
+    flex-shrink: 0;
+    color: #c7c7cc;
+    font-size: 0.8rem;
+  }
+
+  /* iOS Settings-style key/value detail row */
+  .ios-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .ios-detail-label {
+    color: var(--ios-label-secondary);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .ios-detail-value {
+    color: #1a1a1a;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  /* ===== Grouped form (iOS Settings-style input rows) ===== */
+  .ios-form-list {
+    background: #fff;
+    border-radius: var(--ios-radius-lg);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .ios-form-row {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--ios-separator);
+  }
+
+  .ios-form-row:last-child {
+    border-bottom: none;
+  }
+
+  .ios-form-row > label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ios-label-secondary);
+    margin-bottom: 2px;
+  }
+
+  .ios-form-row .form-control,
+  .ios-form-row .form-select {
+    border: none !important;
+    padding: 2px 0 !important;
+    font-size: 1rem;
+    background: transparent !important;
+    border-radius: 0 !important;
+  }
+
+  .ios-form-row .form-control:focus,
+  .ios-form-row .form-select:focus {
+    box-shadow: none !important;
+  }
+
+  .ios-form-row .input-group {
+    align-items: center;
+  }
+
+  .ios-form-row .input-group > .btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ios-form-row > label i {
+    display: none;
+  }
+
+  /* Field spacing: 1.5rem stacked (desktop, via mb-4) collapses to 0 inside the grouped card on mobile */
+  .form-field-group {
+    margin-bottom: 0 !important;
+  }
+
+  /* Genre toggle rows: label left, switch right (iOS convention) */
+  .ios-genre-row {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 12px 16px;
+    margin: 0 !important;
+    min-height: 22px;
+  }
+
+  .ios-genre-row .form-check-input {
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .ios-genre-row .form-check-label {
+    font-weight: 500;
+  }
+
+  /* ===== Action sheet (glass popup, matches the "Mais" panel) ===== */
+  .mobile-more-sheet,
+  .ios-sheet {
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    width: auto;
+    height: auto;
+    max-height: 80vh;
+    border-radius: 26px;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(15, 15, 15, 0.2);
+    overflow-y: auto;
+  }
+
+  .ios-sheet .offcanvas-header {
+    padding: 18px 12px 8px 22px;
+  }
+
+  .ios-sheet .offcanvas-title {
+    font-weight: 600;
+  }
+
+  .ios-sheet .btn-close {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+    background-size: 14px auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ios-sheet .offcanvas-body {
+    padding: 6px 22px 22px;
+  }
+}

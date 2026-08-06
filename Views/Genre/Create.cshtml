@@ -39,19 +39,17 @@
                             <strong>Atenção!</strong> Por favor, corrija os erros abaixo.
                         </div>
 
-                        <!-- Nome do Gênero -->
-                        <div class="mb-4">
-                            <label asp-for="Name" class="form-label fw-semibold">
-                                <i class="fas fa-bookmark text-primary me-2"></i>Nome do Gênero
-                            </label>
-                            <input asp-for="Name" 
-                                   class="form-control form-control-lg" 
-                                   placeholder="Ex: Ficção Científica, Romance, Terror, etc."
-                                   autofocus />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Máximo de 50 caracteres.
+                        <div class="ios-form-list">
+                            <!-- Nome do Gênero -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="Name" class="form-label fw-semibold">
+                                    <i class="fas fa-bookmark text-primary me-2"></i>Nome do Gênero
+                                </label>
+                                <input asp-for="Name"
+                                       class="form-control form-control-lg"
+                                       placeholder="Ex: Ficção Científica, Romance, Terror, etc."
+                                       autofocus />
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                         </div>
 

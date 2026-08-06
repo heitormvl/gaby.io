@@ -1,20 +1,151 @@
 <script>
     $(document).ready(function() {
-        // Carregar países quando o modal de autor for aberto
-        $('#authorModal').on('show.bs.modal', function() {
+        // Carregar países quando o painel de autor for aberto
+        $('#authorModal').on('show.bs.offcanvas', function() {
             $.ajax({
                 url: '@Url.Action("GetCountries", "Country")',
                 type: 'GET',
                 success: function(data) {
                     var select = $('#authorCountry');
                     select.empty();
-                    select.append('<option value="">-- Selecione --</option>');
+                    select.append('<option value="" class="text-muted">Selecione</option>');
                     data.forEach(function(country) {
                         select.append('<option value="' + country.id + '">' + country.name + '</option>');
                     });
                 },
                 error: function() {
                     console.log('Não foi possível carregar os países');
+                }
+            });
+        });
+
+        // Buscar no Google Books (busca automática ao digitar)
+        var googleBooksSearchResults = [];
+        var googleBooksSearchTimeout = null;
+        var googleBooksSearchRequest = null;
+
+        function performGoogleBooksSearch(query) {
+            var resultsContainer = $('#googleBooksResults');
+
+            if (googleBooksSearchRequest) {
+                googleBooksSearchRequest.abort();
+            }
+
+            resultsContainer.empty();
+
+            googleBooksSearchRequest = $.ajax({
+                url: '@Url.Action("SearchGoogleBooks", "Book")',
+                type: 'GET',
+                data: { q: query },
+                success: function(data) {
+                    googleBooksSearchResults = data;
+
+                    if (!data || data.length === 0) {
+                        resultsContainer.append('<p class="text-muted mt-2 mb-0">Nenhum resultado encontrado.</p>');
+                        return;
+                    }
+
+                    data.forEach(function(result, index) {
+                        var details = [];
+                        if (result.authorName) details.push(result.authorName);
+                        if (result.publisherName) details.push(result.publisherName);
+                        if (result.pageCount) details.push(result.pageCount + ' páginas');
+
+                        var genreBadge = result.suggestedGenreName
+                            ? '<span class="badge bg-success mt-1"><i class="fas fa-tag me-1"></i>' + result.suggestedGenreName + '</span>'
+                            : '<span class="badge bg-light text-muted mt-1"><i class="fas fa-tag me-1"></i>Sem gênero sugerido</span>';
+
+                        var item = $('<button type="button" class="list-group-item list-group-item-action"></button>')
+                            .attr('data-index', index)
+                            .html('<strong>' + result.title + '</strong><br><small class="text-muted">' + details.join(' &middot; ') + '</small><br>' + genreBadge);
+
+                        resultsContainer.append(item);
+                    });
+                },
+                error: function(jqXHR, textStatus) {
+                    if (textStatus === 'abort') return;
+                    resultsContainer.html('<p class="text-danger mt-2 mb-0">Erro ao buscar no Google Books. Tente novamente.</p>');
+                }
+            });
+        }
+
+        $('#googleBooksQuery').on('input', function() {
+            var query = $(this).val().trim();
+            clearTimeout(googleBooksSearchTimeout);
+
+            if (query.length < 3) {
+                $('#googleBooksResults').empty();
+                return;
+            }
+
+            googleBooksSearchTimeout = setTimeout(function() {
+                performGoogleBooksSearch(query);
+            }, 500);
+        });
+
+        // Selecionar um resultado do Google Books
+        $(document).on('click', '#googleBooksResults .list-group-item', function() {
+            var index = $(this).data('index');
+            var selection = googleBooksSearchResults[index];
+            if (!selection) return;
+
+            $.ajax({
+                url: '@Url.Action("ResolveGoogleBookSelection", "Book")',
+                type: 'POST',
+                data: {
+                    Title: selection.title,
+                    AuthorName: selection.authorName,
+                    PublisherName: selection.publisherName,
+                    PageCount: selection.pageCount,
+                    PublicationDate: selection.publicationDate,
+                    SuggestedGenreName: selection.suggestedGenreName,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (!response.success) {
+                        $('#googleBooksResults').append('<p class="text-danger mt-2 mb-0">' + (response.errors ? response.errors.join(' ') : 'Erro ao preencher os dados.') + '</p>');
+                        return;
+                    }
+
+                    $('#Title').val(response.title);
+                    if (response.pageCount) {
+                        $('#PageCount').val(response.pageCount);
+                    }
+                    if (response.publicationDate) {
+                        $('#PublicationDate').val(response.publicationDate);
+                    }
+
+                    if (response.authorId) {
+                        var authorSelect = $('#authorSelect');
+                        if (authorSelect.find('option[value="' + response.authorId + '"]').length === 0) {
+                            authorSelect.append(new Option(response.authorName, response.authorId));
+                        }
+                        authorSelect.val(response.authorId);
+                    }
+
+                    if (response.publisherId) {
+                        var publisherSelect = $('#publisherSelect');
+                        if (publisherSelect.find('option[value="' + response.publisherId + '"]').length === 0) {
+                            publisherSelect.append(new Option(response.publisherName, response.publisherId));
+                        }
+                        publisherSelect.val(response.publisherId);
+                    }
+
+                    if (response.genreId) {
+                        var existingCheckbox = $('#genre_' + response.genreId);
+                        if (existingCheckbox.length === 0) {
+                            appendGenreRow(response.genreId, response.genreName, true);
+                        } else {
+                            existingCheckbox.prop('checked', true);
+                        }
+                    }
+
+                    $('#googleBooksResults').empty();
+                    $('#googleBooksQuery').val('');
+                    showSuccessMessage('Campos preenchidos com dados do Google Books!');
+                },
+                error: function() {
+                    $('#googleBooksResults').append('<p class="text-danger mt-2 mb-0">Erro ao preencher os dados. Tente novamente.</p>');
                 }
             });
         });
@@ -50,8 +181,8 @@
                         // Adicionar o novo autor ao select
                         $('#authorSelect').append(new Option(response.name, response.id, true, true));
                         
-                        // Fechar modal e limpar formulário
-                        $('#authorModal').modal('hide');
+                        // Fechar painel e limpar formulário
+                        $('#authorModal').offcanvas('hide');
                         form[0].reset();
                         hideModalError('#authorModalErrors');
                         
@@ -92,8 +223,8 @@
                         // Adicionar a nova editora ao select
                         $('#publisherSelect').append(new Option(response.name, response.id, true, true));
                         
-                        // Fechar modal e limpar formulário
-                        $('#publisherModal').modal('hide');
+                        // Fechar painel e limpar formulário
+                        $('#publisherModal').offcanvas('hide');
                         form[0].reset();
                         hideModalError('#publisherModalErrors');
                         
@@ -131,28 +262,10 @@
                 contentType: false,
                 success: function(response) {
                     if (response.success) {
-                        // Adicionar o novo gênero à lista de checkboxes
-                        var container = $('#genresContainer');
-                        var checkbox = `
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" 
-                                       type="checkbox" 
-                                       name="GenreIds" 
-                                       value="${response.id}" 
-                                       id="genre_${response.id}"
-                                       checked />
-                                <label class="form-check-label" for="genre_${response.id}">
-                                    ${response.name}
-                                </label>
-                            </div>
-                        `;
-                        
-                        // Remover mensagem "Nenhum gênero cadastrado" se existir
-                        container.find('p.text-muted').remove();
-                        container.append(checkbox);
-                        
-                        // Fechar modal e limpar formulário
-                        $('#genreModal').modal('hide');
+                        appendGenreRow(response.id, response.name, true);
+
+                        // Fechar painel e limpar formulário
+                        $('#genreModal').offcanvas('hide');
                         form[0].reset();
                         hideModalError('#genreModalErrors');
                         
@@ -168,13 +281,30 @@
             });
         });
 
-        // Limpar erros ao fechar modais
-        $('.modal').on('hidden.bs.modal', function() {
+        // Limpar erros ao fechar os painéis
+        $('#authorModal, #publisherModal, #genreModal').on('hidden.bs.offcanvas', function() {
             $(this).find('form')[0].reset();
             $(this).find('.alert-danger').addClass('d-none').html('');
         });
 
         // Funções auxiliares
+        function appendGenreRow(id, name, checked) {
+            var container = $('#genresContainer');
+            container.find('p.text-muted').remove();
+            var row = $('<div class="ios-list-row"></div>');
+            var switchWrap = $('<div class="form-check form-switch ios-genre-row"></div>');
+            var input = $('<input class="form-check-input" type="checkbox" role="switch" name="GenreIds">')
+                .attr('value', id)
+                .attr('id', 'genre_' + id)
+                .prop('checked', !!checked);
+            var label = $('<label class="form-check-label"></label>')
+                .attr('for', 'genre_' + id)
+                .text(name);
+            switchWrap.append(input).append(label);
+            row.append(switchWrap);
+            container.append(row);
+        }
+
         function showModalError(selector, errors) {
             var errorDiv = $(selector);
             errorDiv.removeClass('d-none');

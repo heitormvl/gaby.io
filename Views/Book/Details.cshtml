@@ -24,7 +24,7 @@
     </div>
 
     <!-- Informações do Livro -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-12 col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-0 py-3">
@@ -33,7 +33,92 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-4">
+                    <!-- Mobile: lista agrupada estilo iOS -->
+                    <div class="ios-list d-sm-none">
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Título</span>
+                                <span class="ios-detail-value">@Model.Title</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Autor</span>
+                                <span class="ios-detail-value">
+                                    <a asp-controller="Author" asp-action="Details" asp-route-id="@Model.AuthorId" class="text-decoration-none">@Model.AuthorName</a>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Gêneros</span>
+                                <span class="ios-detail-value">
+                                    @if (Model.GenreNames != null && Model.GenreNames.Any())
+                                    {
+                                        @string.Join(", ", Model.GenreNames)
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Editora</span>
+                                <span class="ios-detail-value">
+                                    @if (!string.IsNullOrEmpty(Model.PublisherName))
+                                    {
+                                        @Model.PublisherName
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Páginas</span>
+                                <span class="ios-detail-value">@Model.PageCount</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Publicação</span>
+                                <span class="ios-detail-value">
+                                    @if (Model.PublicationDate.HasValue)
+                                    {
+                                        @Model.PublicationDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Avaliação</span>
+                                <span class="ios-detail-value">
+                                    @if (Model.AverageRating.HasValue)
+                                    {
+                                        @Model.AverageRating.Value.ToString("0.0") <span class="text-muted">(@Model.TotalRatings)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sem avaliações</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop: grade com ícones -->
+                    <div class="row g-4 d-none d-sm-flex">
                         <div class="col-12 col-md-6">
                             <div class="d-flex align-items-start">
                                 <div class="flex-shrink-0">
@@ -56,7 +141,9 @@
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h6 class="text-muted mb-1">Autor</h6>
-                                    <h4 class="mb-0">@Model.AuthorName</h4>
+                                    <h4 class="mb-0">
+                                        <a asp-controller="Author" asp-action="Details" asp-route-id="@Model.AuthorId" class="text-decoration-none">@Model.AuthorName</a>
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -200,13 +287,16 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-3">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg">
-                            <i class="fas fa-edit me-2"></i>Editar Livro
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">
-                            <i class="fas fa-trash me-2"></i>Excluir Livro
-                        </a>
-                        <hr class="my-2">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg">
+                                <i class="fas fa-edit me-2"></i>Editar Livro
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger btn-lg">
+                                <i class="fas fa-trash me-2"></i>Excluir Livro
+                            </a>
+                            <hr class="my-2">
+                        }
                         <a asp-action="Index" class="btn btn-outline-secondary">
                             <i class="fas fa-list me-2"></i>Ver Todos os Livros
                         </a>

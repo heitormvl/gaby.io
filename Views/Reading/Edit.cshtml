@@ -38,85 +38,87 @@
                             <i class="fas fa-exclamation-triangle me-2"></i><strong>Atenção!</strong> Corrija os erros abaixo.
                         </div>
 
-                        <!-- Livro -->
-                        <div class="mb-4">
-                            <label asp-for="BookId" class="form-label fw-semibold">
-                                <i class="fas fa-book text-primary me-2"></i>Selecione um Livro
-                            </label>
-                            <select asp-for="BookId" asp-items="Model.Books" class="form-select form-select-lg" id="BookId">
-                                <option value="">-- Selecione um livro --</option>
-                            </select>
-                            <span asp-validation-for="BookId" class="text-danger"></span>
-                        </div>
-
-                        <!-- Data de Início -->
-                        <div class="mb-4" id="startDateDiv">
-                            <label asp-for="StartDate" class="form-label fw-semibold">
-                                <i class="fas fa-calendar-alt text-info me-2"></i>Data de Início
-                            </label>
-                            <input asp-for="StartDate" type="date" class="form-control form-control-lg" id="startDateInput" />
-                            <span asp-validation-for="StartDate" class="text-danger"></span>
-                        </div>
-
-                        <!-- Data de Término -->
-                        <div class="mb-4" id="endDateDiv">
-                            <label asp-for="EndDate" class="form-label fw-semibold">
-                                <i class="fas fa-calendar-check text-success me-2"></i>Data de Término (opcional)
-                            </label>
-                            <input asp-for="EndDate" type="date" class="form-control form-control-lg" id="endDateInput" />
-                            <span asp-validation-for="EndDate" class="text-danger"></span>
-                        </div>
-
-                        <!-- Status -->
-                        <div class="mb-4">
-                            <label asp-for="Status" class="form-label fw-semibold">
-                                <i class="fas fa-check-circle text-success me-2"></i>Status da Leitura
-                            </label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="Status" id="statusWished" value="Desejado" autocomplete="off" @(Model.Status == "Desejado" ? "checked" : "")>
-                                <label class="btn btn-outline-info" for="statusWished">
-                                    <i class="fas fa-heart me-1"></i>Desejado
+                        <div class="ios-form-list">
+                            <!-- Livro -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="BookId" class="form-label fw-semibold">
+                                    <i class="fas fa-book text-primary me-2"></i>Selecione um Livro
                                 </label>
-
-                                <input type="radio" class="btn-check" name="Status" id="statusProgress" value="Em progresso" autocomplete="off" @(Model.Status == "Em progresso" ? "checked" : "")>
-                                <label class="btn btn-outline-warning" for="statusProgress">
-                                    <i class="fas fa-hourglass-half me-1"></i>Em Progresso
-                                </label>
-
-                                <input type="radio" class="btn-check" name="Status" id="statusCompleted" value="Concluída" autocomplete="off" @(Model.Status == "Concluída" ? "checked" : "")>
-                                <label class="btn btn-outline-success" for="statusCompleted">
-                                    <i class="fas fa-check-circle me-1"></i>Concluída
-                                </label>
+                                <select asp-for="BookId" asp-items="Model.Books" class="form-select form-select-lg" id="BookId">
+                                    <option value="" class="text-muted">Selecione um livro</option>
+                                </select>
+                                <span asp-validation-for="BookId" class="text-danger"></span>
                             </div>
-                            <span asp-validation-for="Status" class="text-danger"></span>
-                        </div>
 
-                        <!-- Páginas Lidas -->
-                        <div class="mb-4" id="pagesReadDiv">
-                            <label asp-for="PagesRead" class="form-label fw-semibold">
-                                <i class="fas fa-file-alt text-secondary me-2"></i>Páginas Lidas
-                            </label>
-                            <input asp-for="PagesRead" type="number" class="form-control form-control-lg" placeholder="Ex: 250" id="PagesRead" />
-                            <span asp-validation-for="PagesRead" class="text-danger"></span>
-                        </div>
+                            <!-- Data de Início -->
+                            <div class="ios-form-row form-field-group" id="startDateDiv">
+                                <label asp-for="StartDate" class="form-label fw-semibold">
+                                    <i class="fas fa-calendar-alt text-info me-2"></i>Data de Início
+                                </label>
+                                <input asp-for="StartDate" type="date" class="form-control form-control-lg" id="startDateInput" />
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
 
-                        <!-- Avaliação -->
-                        <div class="mb-4" id="ratingDiv">
-                            <label asp-for="Rating" class="form-label fw-semibold">
-                                <i class="fas fa-star text-warning me-2"></i>Avaliação (0 a 5 estrelas)
-                            </label>
-                            <div class="star-rating">
-                                <input type="hidden" asp-for="Rating" id="rating-value" />
-                                <div class="stars-container" id="stars-container">
-                                    <i class="far fa-star star" data-value="1"></i>
-                                    <i class="far fa-star star" data-value="2"></i>
-                                    <i class="far fa-star star" data-value="3"></i>
-                                    <i class="far fa-star star" data-value="4"></i>
-                                    <i class="far fa-star star" data-value="5"></i>
+                            <!-- Data de Término -->
+                            <div class="ios-form-row form-field-group" id="endDateDiv">
+                                <label asp-for="EndDate" class="form-label fw-semibold">
+                                    <i class="fas fa-calendar-check text-success me-2"></i>Data de Término (opcional)
+                                </label>
+                                <input asp-for="EndDate" type="date" class="form-control form-control-lg" id="endDateInput" />
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="Status" class="form-label fw-semibold">
+                                    <i class="fas fa-check-circle text-success me-2"></i>Status da Leitura
+                                </label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="Status" id="statusWished" value="Desejado" autocomplete="off" @(Model.Status == "Desejado" ? "checked" : "")>
+                                    <label class="btn btn-outline-info" for="statusWished">
+                                        <i class="fas fa-heart me-1"></i>Desejado
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="Status" id="statusProgress" value="Em progresso" autocomplete="off" @(Model.Status == "Em progresso" ? "checked" : "")>
+                                    <label class="btn btn-outline-warning" for="statusProgress">
+                                        <i class="fas fa-hourglass-half me-1"></i>Em Progresso
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="Status" id="statusCompleted" value="Concluída" autocomplete="off" @(Model.Status == "Concluída" ? "checked" : "")>
+                                    <label class="btn btn-outline-success" for="statusCompleted">
+                                        <i class="fas fa-check-circle me-1"></i>Concluída
+                                    </label>
                                 </div>
-                                <small class="form-text text-muted d-block mt-2">Clique nas estrelas para avaliar. Clique novamente na mesma estrela para remover a avaliação.</small>
+                                <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
-                            <span asp-validation-for="Rating" class="text-danger d-block"></span>
+
+                            <!-- Páginas Lidas -->
+                            <div class="ios-form-row form-field-group" id="pagesReadDiv">
+                                <label asp-for="PagesRead" class="form-label fw-semibold">
+                                    <i class="fas fa-file-alt text-secondary me-2"></i>Páginas Lidas
+                                </label>
+                                <input asp-for="PagesRead" type="number" class="form-control form-control-lg" placeholder="Ex: 250" id="PagesRead" />
+                                <span asp-validation-for="PagesRead" class="text-danger"></span>
+                            </div>
+
+                            <!-- Avaliação -->
+                            <div class="ios-form-row form-field-group" id="ratingDiv">
+                                <label asp-for="Rating" class="form-label fw-semibold">
+                                    <i class="fas fa-star text-warning me-2"></i>Avaliação (0 a 5 estrelas)
+                                </label>
+                                <div class="star-rating">
+                                    <input type="hidden" asp-for="Rating" id="rating-value" />
+                                    <div class="stars-container" id="stars-container">
+                                        <i class="far fa-star star" data-value="1"></i>
+                                        <i class="far fa-star star" data-value="2"></i>
+                                        <i class="far fa-star star" data-value="3"></i>
+                                        <i class="far fa-star star" data-value="4"></i>
+                                        <i class="far fa-star star" data-value="5"></i>
+                                    </div>
+                                    <small class="form-text text-muted d-block mt-2">Clique nas estrelas para avaliar. Clique novamente na mesma estrela para remover a avaliação.</small>
+                                </div>
+                                <span asp-validation-for="Rating" class="text-danger d-block"></span>
+                            </div>
                         </div>
 
                         <!-- Botões de Ação -->

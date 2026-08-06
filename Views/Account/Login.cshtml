@@ -29,44 +29,46 @@
                             <strong>Erro de autenticação:</strong>
                         </div>
 
-                        <!-- Email -->
-                        <div class="mb-4">
-                            <label asp-for="Email" class="form-label fw-semibold">
-                                <i class="fas fa-envelope text-info me-2"></i>E-mail
-                            </label>
-                            <input asp-for="Email" 
-                                   type="email" 
-                                   class="form-control form-control-lg" 
-                                   placeholder="seu@email.com"
-                                   autofocus />
-                            <span asp-validation-for="Email" class="invalid-feedback d-block"></span>
-                        </div>
-
-                        <!-- Senha -->
-                        <div class="mb-4">
-                            <label asp-for="Password" class="form-label fw-semibold">
-                                <i class="fas fa-lock text-warning me-2"></i>Senha
-                            </label>
-                            <div class="input-group">
-                                <input asp-for="Password" 
-                                       type="password" 
-                                       class="form-control form-control-lg" 
-                                       placeholder="Sua senha"
-                                       id="passwordInput" />
-                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <span asp-validation-for="Password" class="invalid-feedback d-block"></span>
-                        </div>
-
-                        <!-- Lembrar Login -->
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe" />
-                                <label class="form-check-label" for="rememberMe">
-                                    <i class="fas fa-bookmark me-1"></i>Lembrar-me neste dispositivo
+                        <div class="ios-form-list">
+                            <!-- Email -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="Email" class="form-label fw-semibold">
+                                    <i class="fas fa-envelope text-info me-2"></i>E-mail
                                 </label>
+                                <input asp-for="Email"
+                                       type="email"
+                                       class="form-control form-control-lg"
+                                       placeholder="seu@email.com"
+                                       autofocus />
+                                <span asp-validation-for="Email" class="invalid-feedback d-block"></span>
+                            </div>
+
+                            <!-- Senha -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="Password" class="form-label fw-semibold">
+                                    <i class="fas fa-lock text-warning me-2"></i>Senha
+                                </label>
+                                <div class="input-group">
+                                    <input asp-for="Password"
+                                           type="password"
+                                           class="form-control form-control-lg"
+                                           placeholder="Sua senha"
+                                           id="passwordInput" />
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="Password" class="invalid-feedback d-block"></span>
+                            </div>
+
+                            <!-- Lembrar Login -->
+                            <div class="ios-form-row form-field-group">
+                                <div class="form-check form-switch ios-genre-row">
+                                    <input asp-for="RememberMe" type="checkbox" role="switch" class="form-check-input" id="rememberMe" />
+                                    <label class="form-check-label" for="rememberMe">
+                                        <i class="fas fa-bookmark me-1"></i>Lembrar-me neste dispositivo
+                                    </label>
+                                </div>
                             </div>
                         </div>
 

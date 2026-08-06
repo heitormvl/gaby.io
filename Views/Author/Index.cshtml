@@ -24,7 +24,7 @@
     </div>
 
     <!-- Card de Resumo -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-12 col-md-6 col-lg-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
@@ -64,7 +64,7 @@
     <!-- Tabela de Autores - Desktop -->
     <div class="row">
         <div class="col-12">
-            <div class="card border-0 shadow-sm d-none d-md-block">
+            <div class="card border-0 shadow-sm d-none d-sm-block">
                 <div class="card-header bg-white border-0 py-3">
                     <h5 class="mb-0">
                         <i class="fas fa-list me-2"></i>Lista de Autores
@@ -112,21 +112,24 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="btn-group d-flex gap-1" role="group">
-                                                <a asp-action="Details" asp-route-id="@author.Id" 
-                                                   class="btn btn-sm btn-outline-primary" 
+                                                <a asp-action="Details" asp-route-id="@author.Id"
+                                                   class="btn btn-sm btn-outline-primary"
                                                    title="Detalhes">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a asp-action="Edit" asp-route-id="@author.Id" 
-                                                   class="btn btn-sm btn-outline-warning" 
-                                                   title="Editar">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a asp-action="Delete" asp-route-id="@author.Id" 
-                                                   class="btn btn-sm btn-outline-danger" 
-                                                   title="Excluir">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
+                                                @if (User.IsInRole("Admin"))
+                                                {
+                                                    <a asp-action="Edit" asp-route-id="@author.Id"
+                                                       class="btn btn-sm btn-outline-warning"
+                                                       title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@author.Id"
+                                                       class="btn btn-sm btn-outline-danger"
+                                                       title="Excluir">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                }
                                             </div>
                                         </td>
                                     </tr>
@@ -137,49 +140,32 @@
                 </div>
             </div>
 
-            <!-- Cards de Autores - Mobile -->
-            <div class="d-md-none">
+            <!-- Lista de Autores - Mobile (estilo iOS, deslize para excluir) -->
+            <div class="ios-list d-sm-none" data-swipe-container>
                 @foreach (var author in Model)
                 {
-                    <div class="card border-0 shadow-sm mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h5 class="card-title mb-1">
-                                        <i class="fas fa-user-circle text-primary me-2"></i>@author.Name
-                                    </h5>
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        <span class="badge bg-info">@author.Gender</span>
-                                        @if (!string.IsNullOrEmpty(author.CountryName))
-                                        {
-                                            <span class="badge bg-secondary">
-                                                <i class="fas fa-flag me-1"></i>@author.CountryName
-                                            </span>
-                                        }
-                                        <span class="badge bg-success">
-                                            <i class="fas fa-book me-1"></i>@author.BookCount @(author.BookCount == 1 ? "livro" : "livros")
-                                        </span>
-                                    </div>
-                                </div>
+                    var subtitleParts = new List<string> { author.Gender.ToString() };
+                    if (!string.IsNullOrEmpty(author.CountryName)) { subtitleParts.Add(author.CountryName); }
+                    subtitleParts.Add(author.BookCount + " " + (author.BookCount == 1 ? "livro" : "livros"));
+                    var subtitle = string.Join(" · ", subtitleParts);
+                    var canManage = User.IsInRole("Admin");
+                    <div class="ios-list-row" data-swipeable="@(canManage ? "true" : null)">
+                        @if (canManage)
+                        {
+                            <div class="ios-list-row-actions">
+                                <a asp-action="Delete" asp-route-id="@author.Id" class="ios-swipe-delete-btn">Excluir</a>
                             </div>
-                            
-                            <div class="d-grid gap-2">
-                                <div class="btn-group" role="group">
-                                    <a asp-action="Details" asp-route-id="@author.Id" 
-                                       class="btn btn-outline-primary">
-                                        <i class="fas fa-eye me-1"></i>Detalhes
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@author.Id" 
-                                       class="btn btn-outline-warning">
-                                        <i class="fas fa-edit me-1"></i>Editar
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@author.Id" 
-                                       class="btn btn-outline-danger">
-                                        <i class="fas fa-trash me-1"></i>Excluir
-                                    </a>
-                                </div>
+                        }
+                        <a asp-action="Details" asp-route-id="@author.Id" class="ios-list-row-content">
+                            <div class="ios-list-row-icon">
+                                <i class="fas fa-user-circle"></i>
                             </div>
-                        </div>
+                            <div class="ios-list-row-text">
+                                <div class="ios-list-row-title">@author.Name</div>
+                                <div class="ios-list-row-subtitle">@subtitle</div>
+                            </div>
+                            <i class="fas fa-chevron-right ios-list-row-chevron"></i>
+                        </a>
                     </div>
                 }
             </div>

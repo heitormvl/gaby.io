@@ -24,14 +24,97 @@
     </div>
 
     <!-- Informações da Leitura -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-12 col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-0 py-3">
                     <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Dados da Leitura</h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-4">
+                    <!-- Mobile: lista agrupada estilo iOS -->
+                    <div class="ios-list d-sm-none">
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Livro</span>
+                                <span class="ios-detail-value">@Model.BookTitle</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Status</span>
+                                <span class="ios-detail-value">@Model.Status</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Início</span>
+                                <span class="ios-detail-value">@Model.StartDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Término</span>
+                                <span class="ios-detail-value">
+                                    @if (Model.EndDate.HasValue)
+                                    {
+                                        @Model.EndDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Páginas Lidas</span>
+                                <span class="ios-detail-value">@Model.PagesRead / @Model.TotalPages</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            @{
+                                int mobileProgress = Model.TotalPages > 0 ? (int)((Model.PagesRead * 100) / Model.TotalPages) : 0;
+                            }
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Progresso</span>
+                                <span class="ios-detail-value">@mobileProgress%</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Sua Avaliação</span>
+                                <span class="ios-detail-value">
+                                    @if (Model.Rating.HasValue && Model.Rating.Value > 0)
+                                    {
+                                        <span class="text-warning">
+                                            @{
+                                                int mobileRating = Model.Rating.Value;
+                                            }
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= mobileRating)
+                                                {
+                                                    <i class="fas fa-star"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-star"></i>
+                                                }
+                                            }
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Sem avaliação</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop: grade com ícones -->
+                    <div class="row g-4 d-none d-sm-flex">
                         <div class="col-12 col-md-6">
                             <div class="d-flex align-items-start">
                                 <div class="flex-shrink-0">

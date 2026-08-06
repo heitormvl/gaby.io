@@ -34,7 +34,8 @@
         <div class="card-body">
             @if (Model.Any())
             {
-                <div class="table-responsive">
+                <!-- Tabela - Desktop -->
+                <div class="table-responsive d-none d-sm-block">
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -67,7 +68,7 @@
                                         }
                                     </td>
                                     <td class="text-end">
-                                        <form asp-action="ToggleAdmin" method="post" style="display: inline;" 
+                                        <form asp-action="ToggleAdmin" method="post" style="display: inline;"
                                               onsubmit="return confirm('@(user.IsAdmin ? "Remover papel de administrador de" : "Conceder papel de administrador para") @user.DisplayName?');">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="userId" value="@user.Id" />
@@ -89,6 +90,47 @@
                             }
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Lista - Mobile (estilo iOS) -->
+                <div class="ios-list d-sm-none">
+                    @foreach (var user in Model)
+                    {
+                        <div class="ios-list-row">
+                            <div class="ios-list-row-content" style="cursor: default;">
+                                <div class="ios-list-row-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="ios-list-row-text">
+                                    <div class="ios-list-row-title">@user.DisplayName</div>
+                                    <div class="ios-list-row-subtitle">@user.Email</div>
+                                </div>
+                                @if (user.IsAdmin)
+                                {
+                                    <span class="badge bg-success"><i class="fas fa-crown me-1"></i>Admin</span>
+                                }
+                            </div>
+                            <div class="px-3 pb-3">
+                                <form asp-action="ToggleAdmin" method="post"
+                                      onsubmit="return confirm('@(user.IsAdmin ? "Remover papel de administrador de" : "Conceder papel de administrador para") @user.DisplayName?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    @if (user.IsAdmin)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                                            <i class="fas fa-user-minus me-1"></i>Remover Admin
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                                            <i class="fas fa-user-shield me-1"></i>Tornar Admin
+                                        </button>
+                                    }
+                                </form>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
             else

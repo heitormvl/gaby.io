@@ -41,65 +41,55 @@
                             <strong>Atenção!</strong> Por favor, corrija os erros abaixo.
                         </div>
 
-                        <!-- Nome do Autor -->
-                        <div class="mb-4">
-                            <label asp-for="Name" class="form-label fw-semibold">
-                                <i class="fas fa-user-circle text-primary me-2"></i>Nome do Autor
-                            </label>
-                            <input asp-for="Name" 
-                                   class="form-control form-control-lg" 
-                                   placeholder="Ex: Machado de Assis, J.K. Rowling, etc."
-                                   autofocus />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Máximo de 100 caracteres.
-                            </div>
-                        </div>
-
-                        <!-- Gênero -->
-                        <div class="mb-4">
-                            <label asp-for="Gender" class="form-label fw-semibold">
-                                <i class="fas fa-venus-mars text-info me-2"></i>Gênero
-                            </label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="Gender" id="genderM" value="M" 
-                                       @(Model.Gender == 'M' ? "checked" : "") autocomplete="off">
-                                <label class="btn btn-outline-primary" for="genderM">
-                                    <i class="fas fa-mars me-1"></i>Masculino
+                        <div class="ios-form-list">
+                            <!-- Nome do Autor -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="Name" class="form-label fw-semibold">
+                                    <i class="fas fa-user-circle text-primary me-2"></i>Nome do Autor
                                 </label>
-
-                                <input type="radio" class="btn-check" name="Gender" id="genderF" value="F" 
-                                       @(Model.Gender == 'F' ? "checked" : "") autocomplete="off">
-                                <label class="btn btn-outline-primary" for="genderF">
-                                    <i class="fas fa-venus me-1"></i>Feminino
-                                </label>
-
-                                <input type="radio" class="btn-check" name="Gender" id="genderN" value="N" 
-                                       @(Model.Gender == 'N' ? "checked" : "") autocomplete="off">
-                                <label class="btn btn-outline-primary" for="genderN">
-                                    <i class="fas fa-genderless me-1"></i>Não-binário
-                                </label>
+                                <input asp-for="Name"
+                                       class="form-control form-control-lg"
+                                       placeholder="Ex: Machado de Assis, J.K. Rowling, etc."
+                                       autofocus />
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <span asp-validation-for="Gender" class="text-danger"></span>
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Selecione o gênero do autor.
-                            </div>
-                        </div>
 
-                        <!-- País de Origem -->
-                        <div class="mb-4">
-                            <label asp-for="CountryId" class="form-label fw-semibold">
-                                <i class="fas fa-flag text-secondary me-2"></i>País de Origem
-                            </label>
-                            <select asp-for="CountryId" asp-items="Model.Countries" class="form-select form-select-lg">
-                                <option value="">-- Selecione um país (opcional) --</option>
-                            </select>
-                            <span asp-validation-for="CountryId" class="text-danger"></span>
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Campo opcional. Selecione o país de origem do autor.
+                            <!-- Gênero -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="Gender" class="form-label fw-semibold">
+                                    <i class="fas fa-venus-mars text-info me-2"></i>Gênero
+                                </label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="Gender" id="genderM" value="M"
+                                           @(Model.Gender == 'M' ? "checked" : "") autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="genderM">
+                                        <i class="fas fa-mars me-1"></i>Masculino
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="Gender" id="genderF" value="F"
+                                           @(Model.Gender == 'F' ? "checked" : "") autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="genderF">
+                                        <i class="fas fa-venus me-1"></i>Feminino
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="Gender" id="genderN" value="N"
+                                           @(Model.Gender == 'N' ? "checked" : "") autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="genderN">
+                                        <i class="fas fa-genderless me-1"></i>Não-binário
+                                    </label>
+                                </div>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+
+                            <!-- País de Origem -->
+                            <div class="ios-form-row form-field-group">
+                                <label asp-for="CountryId" class="form-label fw-semibold">
+                                    <i class="fas fa-flag text-secondary me-2"></i>País de Origem (opcional)
+                                </label>
+                                <select asp-for="CountryId" asp-items="Model.Countries" class="form-select form-select-lg">
+                                    <option value="" class="text-muted">Selecione um país (opcional)</option>
+                                </select>
+                                <span asp-validation-for="CountryId" class="text-danger"></span>
                             </div>
                         </div>
 

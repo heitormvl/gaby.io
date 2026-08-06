@@ -24,7 +24,7 @@
     </div>
 
     <!-- Informações da Conta -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-12 col-lg-8">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-0 py-3">
@@ -33,7 +33,30 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row g-4">
+                    <!-- Mobile: lista agrupada estilo iOS -->
+                    <div class="ios-list d-sm-none">
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Nome</span>
+                                <span class="ios-detail-value">@Model.Name</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">E-mail</span>
+                                <span class="ios-detail-value">@Model.Email</span>
+                            </div>
+                        </div>
+                        <div class="ios-list-row">
+                            <div class="ios-detail-row">
+                                <span class="ios-detail-label">Registrado em</span>
+                                <span class="ios-detail-value">@Model.RegisteredAt.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop: grade com ícones -->
+                    <div class="row g-4 d-none d-sm-flex">
                         <div class="col-12 col-md-6">
                             <div class="d-flex align-items-start">
                                 <div class="flex-shrink-0">
@@ -91,7 +114,7 @@
                         <a asp-action="EditDisplayName" class="btn btn-primary btn-lg">
                             <i class="fas fa-user-edit me-2"></i>Editar Nome
                         </a>
-                        <button type="button" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                        <button type="button" class="btn btn-warning btn-lg" data-bs-toggle="offcanvas" data-bs-target="#logoutModal">
                             <i class="fas fa-sign-out-alt me-2"></i>Sair da Conta
                         </button>
                         <hr class="my-2">
@@ -132,32 +155,28 @@
     </div>
 </div>
 
-<!-- Modal de Logout -->
-<div class="modal fade" id="logoutModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-warning text-dark border-0">
-                <h5 class="modal-title fw-bold">
-                    <i class="fas fa-sign-out-alt me-2"></i>Sair da Conta
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-0">
-                    <i class="fas fa-question-circle text-warning me-2"></i>
-                    Tem certeza que deseja sair de sua conta?
-                </p>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Cancelar
+<!-- Painel de Logout -->
+<div class="offcanvas offcanvas-bottom ios-sheet" id="logoutModal" tabindex="-1">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title fw-bold">
+            <i class="fas fa-sign-out-alt me-2"></i>Sair da Conta
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <p>
+            <i class="fas fa-question-circle text-warning me-2"></i>
+            Tem certeza que deseja sair de sua conta?
+        </p>
+        <div class="d-flex gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary flex-fill" data-bs-dismiss="offcanvas">
+                <i class="fas fa-times me-1"></i>Cancelar
+            </button>
+            <form asp-action="Logout" method="post" class="flex-fill">
+                <button type="submit" class="btn btn-warning w-100">
+                    <i class="fas fa-sign-out-alt me-1"></i>Sair
                 </button>
-                <form asp-action="Logout" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-warning">
-                        <i class="fas fa-sign-out-alt me-1"></i>Sair
-                    </button>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
 </div>
