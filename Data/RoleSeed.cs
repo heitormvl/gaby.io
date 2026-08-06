@@ -13,7 +13,7 @@ public static class RoleSeed
         // Criar role Admin se não existir
         if (!await roleManager.RoleExistsAsync("Admin"))
         {
-            await roleManager.CreateAsync(new IdentityRole<string>("Admin"));
+            await roleManager.CreateAsync(new IdentityRole<string>("Admin") { Id = Guid.NewGuid().ToString() });
         }
 
         // Opcional: Criar um usuário admin padrão
