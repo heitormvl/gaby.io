@@ -126,6 +126,11 @@ public class ReadingController : Controller
         if (string.IsNullOrEmpty(userId))
             return RedirectToAction("Login", "Account");
 
+        if (model.Status != "Desejado" && !model.StartDate.HasValue)
+        {
+            ModelState.AddModelError(nameof(model.StartDate), "Informe a data de início.");
+        }
+
         if (!ModelState.IsValid)
         {
             model.AvailableBooks = await _context.Books
@@ -206,6 +211,11 @@ public class ReadingController : Controller
 
         if (id != model.Id)
             return NotFound();
+
+        if (model.Status != "Desejado" && !model.StartDate.HasValue)
+        {
+            ModelState.AddModelError(nameof(model.StartDate), "Informe a data de início.");
+        }
 
         if (!ModelState.IsValid)
         {

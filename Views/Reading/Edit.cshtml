@@ -309,11 +309,16 @@
                 ratingInput.value = '';
                 updateStars(0);
             } else {
-                // Mostrar todos os campos
-                startDateDiv.style.display = 'block';
-                endDateDiv.style.display = 'block';
-                pagesReadDiv.style.display = 'block';
-                ratingDiv.style.display = 'block';
+                // Mostrar todos os campos (remove o override inline e volta ao display definido em CSS)
+                startDateDiv.style.display = '';
+                endDateDiv.style.display = '';
+                pagesReadDiv.style.display = '';
+                ratingDiv.style.display = '';
+
+                // Se a data de início foi apagada (ex: ao passar por "Desejado"), preenche com hoje
+                if (!startDateInput.value) {
+                    startDateInput.value = new Date().toISOString().split('T')[0];
+                }
             }
         }
 
