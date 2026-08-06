@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Gaby.io.Data;
 using Gaby.io.Models;
 using Gaby.io.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +47,11 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
+            if (string.Equals(user.Email, RoleSeed.OwnerAdminEmail, StringComparison.OrdinalIgnoreCase))
+            {
+                await _userManager.AddToRoleAsync(user, "Admin");
+            }
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             return RedirectToAction("Index", "Home");
         }
