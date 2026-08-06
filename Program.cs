@@ -1,5 +1,6 @@
 using Gaby.io.Data;
 using Gaby.io.Models;
+using Gaby.io.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,22 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
+
+// Integração com a API do Google Books (busca de metadados para preenchimento automático)
+builder.Services.Configure<GoogleBooksOptions>(builder.Configuration.GetSection("GoogleBooks"));
+builder.Services.AddHttpClient<IGoogleBooksService, GoogleBooksService>(client =>
+{
+    client.BaseAddress = new Uri("https://www.googleapis.com/books/v1/");
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+
+// Enriquecimento de autores (gênero e país) via Wikidata, ao criar um autor a partir do Google Books
+builder.Services.AddHttpClient<IWikidataService, WikidataService>(client =>
+{
+    client.BaseAddress = new Uri("https://www.wikidata.org/");
+    client.Timeout = TimeSpan.FromSeconds(8);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("gaby.io/1.0 (personal library app; https://github.com/heitormvl/gaby.io)");
+});
 
 // Build da aplicação
 var app = builder.Build();

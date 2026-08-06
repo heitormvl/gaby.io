@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Gaby.io.Data;
 using Gaby.io.Models;
+using Gaby.io.Services;
 using Gaby.io.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,10 +13,14 @@ namespace Gaby.io.Controllers;
 public class BookController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly IGoogleBooksService _googleBooksService;
+    private readonly IWikidataService _wikidataService;
 
-    public BookController(AppDbContext context)
+    public BookController(AppDbContext context, IGoogleBooksService googleBooksService, IWikidataService wikidataService)
     {
         _context = context;
+        _googleBooksService = googleBooksService;
+        _wikidataService = wikidataService;
     }
 
     public IActionResult Index()
@@ -324,5 +329,109 @@ public class BookController : Controller
         }
 
         return Json(new { success = true, id = book.Id, title = book.Title, pageCount = book.PageCount });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> SearchGoogleBooks(string q, CancellationToken cancellationToken)
+    {
+        var results = await _googleBooksService.SearchAsync(q, cancellationToken);
+        return Json(results);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResolveGoogleBookSelection(GoogleBookSearchResult selection)
+    {
+        if (string.IsNullOrWhiteSpace(selection.Title))
+            return Json(new { success = false, errors = new[] { "Título inválido." } });
+
+        var author = await FindOrCreateAuthorAsync(selection.AuthorName);
+        var publisher = await FindOrCreatePublisherAsync(selection.PublisherName);
+        var genre = await FindOrCreateGenreAsync(selection.SuggestedGenreName);
+
+        return Json(new
+        {
+            success = true,
+            title = selection.Title,
+            pageCount = selection.PageCount,
+            publicationDate = selection.PublicationDate?.ToString("yyyy-MM-dd"),
+            authorId = author.Id,
+            authorName = author.Name,
+            publisherId = publisher?.Id,
+            publisherName = publisher?.Name,
+            genreId = genre?.Id,
+            genreName = genre?.Name
+        });
+    }
+
+    private async Task<AuthorModel> FindOrCreateAuthorAsync(string? name)
+    {
+        var authorName = string.IsNullOrWhiteSpace(name) ? "Autor desconhecido" : name.Trim();
+
+        var existing = await _context.Authors
+            .FirstOrDefaultAsync(a => a.Name.ToLower() == authorName.ToLower());
+        if (existing != null)
+            return existing;
+
+        char gender = 'N';
+        int? countryId = null;
+
+        var enrichment = await _wikidataService.LookupAuthorAsync(authorName, HttpContext.RequestAborted);
+        if (enrichment != null)
+        {
+            if (enrichment.Gender.HasValue)
+                gender = enrichment.Gender.Value;
+
+            if (!string.IsNullOrWhiteSpace(enrichment.CountryName))
+            {
+                var country = await _context.Countries
+                    .FirstOrDefaultAsync(c => c.Name.ToLower() == enrichment.CountryName.ToLower());
+                countryId = country?.Id;
+            }
+        }
+
+        var author = new AuthorModel
+        {
+            Name = authorName,
+            Gender = gender,
+            CountryId = countryId
+        };
+        _context.Authors.Add(author);
+        await _context.SaveChangesAsync();
+        return author;
+    }
+
+    private async Task<PublisherModel?> FindOrCreatePublisherAsync(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        var publisherName = name.Trim();
+        var existing = await _context.Publishers
+            .FirstOrDefaultAsync(p => p.Name.ToLower() == publisherName.ToLower());
+        if (existing != null)
+            return existing;
+
+        var publisher = new PublisherModel { Name = publisherName };
+        _context.Publishers.Add(publisher);
+        await _context.SaveChangesAsync();
+        return publisher;
+    }
+
+    private async Task<GenreModel?> FindOrCreateGenreAsync(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        var genreName = name.Trim();
+        var existing = await _context.Genres
+            .FirstOrDefaultAsync(g => g.Name.ToLower() == genreName.ToLower());
+        if (existing != null)
+            return existing;
+
+        var genre = new GenreModel { Name = genreName };
+        _context.Genres.Add(genre);
+        await _context.SaveChangesAsync();
+        return genre;
     }
 }
