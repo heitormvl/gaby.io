@@ -108,6 +108,7 @@ public class AuthorController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Edit(int id)
     {
         var authorModel = _context.Authors.Find(id);
@@ -135,6 +136,7 @@ public class AuthorController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public IActionResult Edit(int id, AuthorFormViewModel model)
     {
         if (id != model.Id)
@@ -167,6 +169,7 @@ public class AuthorController : Controller
         return RedirectToAction(nameof(Details), new { id = model.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         var authorModel = _context.Authors
@@ -191,6 +194,7 @@ public class AuthorController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteConfirmed(int id)
     {
         var authorToDelete = _context.Authors.Find(id);

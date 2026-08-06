@@ -160,6 +160,7 @@ public class BookController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Edit(int id)
     {
         var bookModel = _context.Books
@@ -197,6 +198,7 @@ public class BookController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public IActionResult Edit(int id, BookFormViewModel model)
     {
         if (id != model.Id)
@@ -257,6 +259,7 @@ public class BookController : Controller
         return RedirectToAction(nameof(Details), new { id = model.Id });
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         var bookModel = _context.Books
@@ -278,6 +281,7 @@ public class BookController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteConfirmed(int id)
     {
         var bookToDelete = _context.Books.Find(id);
