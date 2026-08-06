@@ -7,5 +7,11 @@ public class AuthorDetailsViewModel
     public string Gender { get; set; } = string.Empty;
     public string? CountryName { get; set; }
 
-    public List<string>? Books { get; set; } = new();
+    public List<AuthorBookSummary>? Books { get; set; } = new();
+}
+
+public class AuthorBookSummary
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
 }

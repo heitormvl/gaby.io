@@ -53,7 +53,9 @@ public class AuthorController : Controller
             Name = authorModel.Name,
             Gender = authorModel.Gender == 'M' ? "Masculino" : authorModel.Gender == 'F' ? "Feminino" : "Não-binário",
             CountryName = authorModel.Country?.Name,
-            Books = authorModel.Books.Select(b => b.Title).ToList()
+            Books = authorModel.Books
+                .Select(b => new AuthorBookSummary { Id = b.Id, Title = b.Title })
+                .ToList()
         };
 
         return View(author);

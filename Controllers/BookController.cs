@@ -76,6 +76,7 @@ public class BookController : Controller
         {
             Id = bookModel.Id,
             Title = bookModel.Title,
+            AuthorId = bookModel.Author.Id,
             AuthorName = bookModel.Author.Name,
             PublisherName = bookModel.Publisher?.Name,
             GenreNames = bookModel.BookGenres.Select(bg => bg.Genre.Name).ToList(),
