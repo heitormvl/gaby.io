@@ -7,7 +7,7 @@ Sistema de gerenciamento de biblioteca pessoal desenvolvido com ASP.NET Core MVC
 - Gerenciamento de livros, autores e editoras
 - Registro de leituras e lista de desejos
 - Sistema de avaliação de livros (0 a 5 estrelas)
-- Autenticação e autorização via ASP.NET Core Identity
+- Autenticação e autorização via ASP.NET Core Identity, com recuperação de senha por e-mail (Resend)
 - Painel administrativo com gerenciamento de usuários
 - Dashboard interativo com estatísticas de leitura
 
@@ -104,6 +104,10 @@ fly.toml Configuration:
   },
   "GoogleBooks": {
     "ApiKey": ""
+  },
+  "Resend": {
+    "ApiKey": "",
+    "FromEmail": ""
   }
 }
 ```
@@ -111,6 +115,8 @@ fly.toml Configuration:
 Em produção, configure as variáveis de ambiente no painel do Fly.io:
 - `ConnectionStrings__Default` — String de conexão PostgreSQL (Supabase)
 - `GoogleBooks__ApiKey` — API Key para busca de metadados de livros
+- `Resend__ApiKey` — API Key do [Resend](https://resend.com), usada para enviar o e-mail de recuperação de senha
+- `Resend__FromEmail` — Endereço remetente verificado no Resend
 
 ## Estrutura do Projeto
 

@@ -1,7 +1,10 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Gaby.io.Data;
 using Gaby.io.Models;
+using Gaby.io.Services;
 using Gaby.io.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
@@ -12,11 +15,19 @@ public class AccountController : Controller
 {
     private readonly UserManager<UserModel> _userManager;
     private readonly SignInManager<UserModel> _signInManager;
+    private readonly IEmailSender _emailSender;
+    private readonly ILogger<AccountController> _logger;
 
-    public AccountController(UserManager<UserModel> userManager, SignInManager<UserModel> signInManager)
+    public AccountController(
+        UserManager<UserModel> userManager,
+        SignInManager<UserModel> signInManager,
+        IEmailSender emailSender,
+        ILogger<AccountController> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _emailSender = emailSender;
+        _logger = logger;
     }
 
     [AllowAnonymous]
@@ -173,6 +184,103 @@ public class AccountController : Controller
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
+    }
+
+    [AllowAnonymous]
+    // GET: Account/ForgotPassword
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+    [AllowAnonymous]
+    // POST: Account/ForgotPassword
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+
+        // Sempre exibe a mesma confirmação, exista ou não o e-mail, para não revelar quais e-mails estão cadastrados.
+        if (user != null)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var resetLink = Url.Action("ResetPassword", "Account", new { email = user.Email, token = encodedToken }, Request.Scheme);
+            var html = EmailTemplates.PasswordReset(user.DisplayName, resetLink!);
+
+            try
+            {
+                await _emailSender.SendEmailAsync(user.Email!, "Redefinição de senha - gaby.io", html);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Falha ao enviar e-mail de redefinição de senha para {Email}", user.Email);
+            }
+        }
+
+        return View("ForgotPasswordConfirmation");
+    }
+
+    [AllowAnonymous]
+    // GET: Account/ResetPassword
+    public IActionResult ResetPassword(string? email = null, string? token = null)
+    {
+        if (email == null || token == null)
+            return RedirectToAction("Login");
+
+        var model = new ResetPasswordViewModel
+        {
+            Email = email,
+            Token = token
+        };
+
+        return View(model);
+    }
+
+    [AllowAnonymous]
+    // POST: Account/ResetPassword
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            // Não revela se o e-mail existe; mostra a mesma confirmação de sucesso.
+            return View("ResetPasswordConfirmation");
+        }
+
+        string decodedToken;
+        try
+        {
+            decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(model.Token));
+        }
+        catch (FormatException)
+        {
+            ModelState.AddModelError(string.Empty, "Link de redefinição inválido ou expirado.");
+            return View(model);
+        }
+
+        var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.Password);
+
+        if (result.Succeeded)
+        {
+            return View("ResetPasswordConfirmation");
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        return View(model);
     }
 
     private IActionResult RedirectToLocal(string? returnUrl)

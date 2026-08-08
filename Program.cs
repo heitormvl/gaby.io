@@ -53,6 +53,14 @@ builder.Services.AddHttpClient<IWikidataService, WikidataService>(client =>
     client.DefaultRequestHeaders.UserAgent.ParseAdd("gaby.io/1.0 (personal library app; https://github.com/heitormvl/gaby.io)");
 });
 
+// Envio de e-mails (recuperação de senha) via Resend
+builder.Services.Configure<ResendOptions>(builder.Configuration.GetSection("Resend"));
+builder.Services.AddHttpClient<IEmailSender, ResendEmailSender>(client =>
+{
+    client.BaseAddress = new Uri("https://api.resend.com/");
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+
 // Build da aplicação
 var app = builder.Build();
 

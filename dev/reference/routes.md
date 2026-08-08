@@ -22,6 +22,10 @@ Mapeamento completo de todas as rotas disponíveis no **gaby.io**.
 | POST | `/Account/Login` | Account | Login | Pública | Autenticar usuário |
 | POST | `/Account/Logout` | Account | Logout | Autenticado | Deslogar usuário |
 | GET | `/Account/Index` | Account | Index | Autenticado | Perfil do usuário |
+| GET | `/Account/ForgotPassword` | Account | ForgotPassword | Pública | Formulário de recuperação de senha |
+| POST | `/Account/ForgotPassword` | Account | ForgotPassword | Pública | Envia e-mail com link de redefinição (via Resend) |
+| GET | `/Account/ResetPassword` | Account | ResetPassword | Pública | Formulário de nova senha (via link do e-mail) |
+| POST | `/Account/ResetPassword` | Account | ResetPassword | Pública | Efetiva a redefinição de senha |
 
 ---
 
