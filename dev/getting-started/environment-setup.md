@@ -9,7 +9,7 @@ Guia detalhado para configurar seu ambiente de desenvolvimento para o **gaby.io*
 | Componente | Versão Mínima | Recomendado | Link |
 |------------|---------------|-------------|------|
 | .NET SDK | 8.0 | 8.0.x | [Download](https://dotnet.microsoft.com/download) |
-| SQL Server | 2019 | 2022 | [Download](https://www.microsoft.com/sql-server) |
+| PostgreSQL | 15 | 16 | [Download](https://www.postgresql.org/download/) |
 | C# | 12.0 | 12.0 | (Incluído no .NET SDK) |
 
 ### Ferramentas Recomendadas
@@ -19,8 +19,9 @@ Guia detalhado para configurar seu ambiente de desenvolvimento para o **gaby.io*
   - Visual Studio Code + C# Extension
   
 - **Banco de Dados:**
-  - SQL Server Management Studio (SSMS)
-  - Azure Data Studio
+  - Docker (para rodar o PostgreSQL localmente)
+  - pgAdmin ou `psql`
+  - Conta [Supabase](https://supabase.com/) (para o banco hospedado)
   
 - **Controle de Versão:**
   - Git 2.0+
@@ -43,19 +44,18 @@ dotnet --version
 # Deve exibir: 8.0.x
 ```
 
-### 2. Instalar SQL Server
+### 2. Instalar PostgreSQL
 
-**Opção A: SQL Server Express (Gratuito)**
+**Opção A: Docker (Recomendado)**
 ```powershell
-# Baixe e instale:
-# https://www.microsoft.com/sql-server/sql-server-downloads
-
-# Escolha "Express" durante a instalação
+docker run -e POSTGRES_PASSWORD=DevLocal!Passw0rd -e POSTGRES_DB=gabyio `
+  -p 5432:5432 --name gabyio-postgres `
+  -d postgres:16
 ```
 
-**Opção B: SQL Server Developer (Gratuito para desenvolvimento)**
-- Mais recursos que o Express
-- Ideal para desenvolvimento local
+**Opção B: Instalador nativo**
+- Baixe em: https://www.postgresql.org/download/windows/
+- Durante a instalação, defina uma senha para o usuário `postgres`
 
 ### 3. Instalar Entity Framework Tools
 
@@ -69,18 +69,11 @@ dotnet ef --version
 # Deve exibir: 8.0.x
 ```
 
-### 4. Configurar SQL Server
-
-**Habilitar autenticação do Windows (recomendado):**
-
-1. Abra o SQL Server Configuration Manager
-2. Vá em "SQL Server Network Configuration" > "Protocols"
-3. Habilite "TCP/IP"
-4. Reinicie o serviço SQL Server
+### 4. Configurar PostgreSQL
 
 **String de conexão típica:**
 ```
-Server=localhost;Database=GabyIO;Trusted_Connection=True;TrustServerCertificate=True
+Host=127.0.0.1;Port=5432;Database=gabyio;Username=postgres;Password=DevLocal!Passw0rd
 ```
 
 ## 🐧 Linux
@@ -100,15 +93,25 @@ sudo apt install dotnet-sdk-8.0
 sudo dnf install dotnet-sdk-8.0
 ```
 
-### 2. Instalar SQL Server no Linux
+### 2. Instalar PostgreSQL no Linux
 
+**Opção A: Docker (Recomendado)**
+```bash
+docker run -e POSTGRES_PASSWORD=DevLocal!Passw0rd -e POSTGRES_DB=gabyio \
+  -p 5432:5432 --name gabyio-postgres \
+  -d postgres:16
+```
+
+**Opção B: Instalação nativa**
 ```bash
 # Ubuntu
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2022.list)"
 sudo apt update
-sudo apt install -y mssql-server
-sudo /opt/mssql/bin/mssql-conf setup
+sudo apt install -y postgresql postgresql-contrib
+
+# Fedora
+sudo dnf install -y postgresql-server postgresql-contrib
+sudo postgresql-setup --initdb
+sudo systemctl enable --now postgresql
 ```
 
 ### 3. Instalar EF Tools
@@ -130,20 +133,24 @@ brew install dotnet-sdk
 # https://dotnet.microsoft.com/download
 ```
 
-### 2. SQL Server no macOS
+### 2. PostgreSQL no macOS
 
 **Opção A: Docker (Recomendado)**
 ```bash
-docker pull mcr.microsoft.com/mssql/server:2022-latest
+docker run -e POSTGRES_PASSWORD=DevLocal!Passw0rd -e POSTGRES_DB=gabyio \
+  -p 5432:5432 --name gabyio-postgres \
+  -d postgres:16
+```
 
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=SuaSenha123!" \
-  -p 1433:1433 --name sqlserver \
-  -d mcr.microsoft.com/mssql/server:2022-latest
+**Opção B: Homebrew**
+```bash
+brew install postgresql@16
+brew services start postgresql@16
 ```
 
 **String de conexão:**
 ```
-Server=localhost,1433;Database=GabyIO;User Id=sa;Password=SuaSenha123!;TrustServerCertificate=True
+Host=127.0.0.1;Port=5432;Database=gabyio;Username=postgres;Password=DevLocal!Passw0rd
 ```
 
 ### 3. Instalar EF Tools
@@ -161,7 +168,7 @@ Para não expor credenciais no código, use User Secrets:
 dotnet user-secrets init
 
 # Adicionar connection string
-dotnet user-secrets set "ConnectionStrings:Default" "Server=localhost;Database=GabyIO;User Id=sa;Password=SuaSenha123!;TrustServerCertificate=True"
+dotnet user-secrets set "ConnectionStrings:Default" "Host=127.0.0.1;Port=5432;Database=gabyio;Username=postgres;Password=DevLocal!Passw0rd"
 ```
 
 ## 🧪 Verificar Instalação
@@ -192,7 +199,7 @@ O projeto utiliza os seguintes pacotes principais:
 ```xml
 <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
 <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
 <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
 <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
 ```
@@ -207,17 +214,17 @@ Eles são instalados automaticamente ao executar `dotnet restore`.
 version: '3.8'
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:16
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "SuaSenha123!"
+      POSTGRES_PASSWORD: "DevLocal!Passw0rd"
+      POSTGRES_DB: "gabyio"
     ports:
-      - "1433:1433"
+      - "5432:5432"
     volumes:
-      - sqldata:/var/opt/mssql
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  sqldata:
+  pgdata:
 ```
 
 Execute:
@@ -234,12 +241,12 @@ Adicione o .NET ao PATH:
 export PATH="$PATH:/usr/local/share/dotnet"
 ```
 
-### "Cannot connect to SQL Server"
+### "Cannot connect to PostgreSQL"
 
-- ✅ Verifique se o serviço está rodando
-- ✅ Teste com SSMS ou Azure Data Studio
+- ✅ Verifique se o serviço (ou container Docker) está rodando
+- ✅ Teste com `psql` ou pgAdmin
 - ✅ Verifique o firewall
-- ✅ Confirme a porta 1433
+- ✅ Confirme a porta 5432
 
 ### "Migration failed"
 

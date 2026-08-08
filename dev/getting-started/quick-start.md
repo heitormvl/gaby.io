@@ -20,31 +20,34 @@ cd gaby.io
 
 ## 🔧 2. Configure a String de Conexão
 
-Edite o arquivo `appsettings.json` e ajuste a string de conexão para seu SQL Server:
+Suba um PostgreSQL local via Docker:
+
+```bash
+docker run -e POSTGRES_PASSWORD=DevLocal!Passw0rd -e POSTGRES_DB=gabyio \
+  -p 5432:5432 --name gabyio-postgres \
+  -d postgres:16
+```
+
+Edite o arquivo `appsettings.Development.json` (ou use User Secrets) e ajuste a string de conexão:
 
 ```json
 {
   "ConnectionStrings": {
-    "Default": "Server=localhost;Database=GabyIO;Trusted_Connection=True;TrustServerCertificate=True"
+    "Default": "Host=127.0.0.1;Port=5432;Database=gabyio;Username=postgres;Password=DevLocal!Passw0rd"
   }
 }
 ```
 
 ### Exemplos de Strings de Conexão:
 
-**SQL Server Local (Windows Authentication):**
+**PostgreSQL Local (Docker):**
 ```
-Server=localhost;Database=GabyIO;Trusted_Connection=True;TrustServerCertificate=True
-```
-
-**SQL Server com Usuário/Senha:**
-```
-Server=localhost;Database=GabyIO;User Id=sa;Password=SuaSenha123;TrustServerCertificate=True
+Host=127.0.0.1;Port=5432;Database=gabyio;Username=postgres;Password=DevLocal!Passw0rd
 ```
 
-**SQL Server Express:**
+**Supabase (produção/staging):**
 ```
-Server=localhost\\SQLEXPRESS;Database=GabyIO;Trusted_Connection=True;TrustServerCertificate=True
+Host=db.<project-ref>.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=SuaSenha
 ```
 
 ## 🗄️ 3. Execute as Migrations
@@ -56,7 +59,7 @@ dotnet ef database update
 ```
 
 Isso irá:
-- ✅ Criar o banco de dados `GabyIO`
+- ✅ Criar o banco de dados `gabyio`
 - ✅ Criar todas as tabelas necessárias
 - ✅ Executar os seeds iniciais (países, roles)
 
@@ -94,17 +97,11 @@ Execute o script `dev/create-first-admin.sql` substituindo o email:
 
 ```sql
 -- Substitua [SEU_EMAIL@example.com] pelo seu email
-DECLARE @UserId NVARCHAR(450)
-DECLARE @RoleId NVARCHAR(450)
-
-SELECT @UserId = Id FROM AspNetUsers WHERE Email = 'SEU_EMAIL@example.com'
-SELECT @RoleId = Id FROM AspNetRoles WHERE Name = 'Admin'
-
-IF @UserId IS NOT NULL AND @RoleId IS NOT NULL
-BEGIN
-    INSERT INTO AspNetUserRoles (UserId, RoleId)
-    VALUES (@UserId, @RoleId)
-END
+INSERT INTO "AspNetUserRoles" ("UserId", "RoleId")
+SELECT u."Id", r."Id"
+FROM "AspNetUsers" u, "AspNetRoles" r
+WHERE u."Email" = 'SEU_EMAIL@example.com'
+  AND r."Name" = 'Admin';
 ```
 
 Faça logout e login novamente para atualizar suas permissões.
@@ -127,11 +124,11 @@ Agora você pode:
 
 ## ❓ Problemas Comuns
 
-### Erro: "Cannot connect to SQL Server"
+### Erro: "Cannot connect to PostgreSQL" / "Connection refused"
 
-- ✅ Verifique se o SQL Server está em execução
-- ✅ Confirme a string de conexão no `appsettings.json`
-- ✅ Teste a conexão com SQL Server Management Studio
+- ✅ Verifique se o container Docker do PostgreSQL está em execução (`docker ps`)
+- ✅ Confirme a string de conexão no `appsettings.Development.json`
+- ✅ Teste a conexão com `psql` ou pgAdmin
 
 ### Erro: "No migrations found"
 

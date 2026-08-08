@@ -1,55 +1,50 @@
 -- Script para criar o primeiro administrador
 -- Substitua '[EMAIL_DO_USUARIO]' pelo email do usuário que você deseja tornar administrador
 
--- 1. Criar a role Admin (se não existir)
-IF NOT EXISTS (SELECT * FROM AspNetRoles WHERE Name = 'Admin')
+DO $$
+DECLARE
+    admin_role_id TEXT;
+    target_user_id TEXT;
+    user_email TEXT := '[EMAIL_DO_USUARIO]'; -- ALTERE AQUI
 BEGIN
-    DECLARE @AdminRoleId NVARCHAR(450) = NEWID()
-    INSERT INTO AspNetRoles (Id, Name, NormalizedName, ConcurrencyStamp)
-    VALUES (@AdminRoleId, 'Admin', 'ADMIN', NEWID())
-    PRINT 'Role Admin criada com sucesso'
-END
-ELSE
-BEGIN
-    PRINT 'Role Admin já existe'
-END
-
--- 2. Adicionar o usuário à role Admin
-DECLARE @UserId NVARCHAR(450)
-DECLARE @RoleId NVARCHAR(450)
-DECLARE @UserEmail NVARCHAR(256) = '[EMAIL_DO_USUARIO]' -- ALTERE AQUI
-
-SELECT @UserId = Id FROM AspNetUsers WHERE Email = @UserEmail
-SELECT @RoleId = Id FROM AspNetRoles WHERE Name = 'Admin'
-
-IF @UserId IS NULL
-BEGIN
-    PRINT 'ERRO: Usuário com email ' + @UserEmail + ' não encontrado'
-END
-ELSE IF @RoleId IS NULL
-BEGIN
-    PRINT 'ERRO: Role Admin não encontrada'
-END
-ELSE
-BEGIN
-    IF NOT EXISTS (SELECT * FROM AspNetUserRoles WHERE UserId = @UserId AND RoleId = @RoleId)
-    BEGIN
-        INSERT INTO AspNetUserRoles (UserId, RoleId)
-        VALUES (@UserId, @RoleId)
-        PRINT 'Usuário adicionado à role Admin com sucesso'
-    END
+    -- 1. Criar a role Admin (se não existir)
+    IF NOT EXISTS (SELECT 1 FROM "AspNetRoles" WHERE "Name" = 'Admin') THEN
+        admin_role_id := gen_random_uuid()::text;
+        INSERT INTO "AspNetRoles" ("Id", "Name", "NormalizedName", "ConcurrencyStamp")
+        VALUES (admin_role_id, 'Admin', 'ADMIN', gen_random_uuid()::text);
+        RAISE NOTICE 'Role Admin criada com sucesso';
     ELSE
-    BEGIN
-        PRINT 'Usuário já é um administrador'
-    END
-END
+        RAISE NOTICE 'Role Admin já existe';
+    END IF;
+
+    -- 2. Adicionar o usuário à role Admin
+    SELECT "Id" INTO target_user_id FROM "AspNetUsers" WHERE "Email" = user_email;
+    SELECT "Id" INTO admin_role_id FROM "AspNetRoles" WHERE "Name" = 'Admin';
+
+    IF target_user_id IS NULL THEN
+        RAISE NOTICE 'ERRO: Usuário com email % não encontrado', user_email;
+    ELSIF admin_role_id IS NULL THEN
+        RAISE NOTICE 'ERRO: Role Admin não encontrada';
+    ELSE
+        IF NOT EXISTS (
+            SELECT 1 FROM "AspNetUserRoles"
+            WHERE "UserId" = target_user_id AND "RoleId" = admin_role_id
+        ) THEN
+            INSERT INTO "AspNetUserRoles" ("UserId", "RoleId")
+            VALUES (target_user_id, admin_role_id);
+            RAISE NOTICE 'Usuário adicionado à role Admin com sucesso';
+        ELSE
+            RAISE NOTICE 'Usuário já é um administrador';
+        END IF;
+    END IF;
+END $$;
 
 -- 3. Verificar todos os administradores
-SELECT 
-    u.Email,
-    u.DisplayName,
-    r.Name as Role
-FROM AspNetUsers u
-INNER JOIN AspNetUserRoles ur ON u.Id = ur.UserId
-INNER JOIN AspNetRoles r ON ur.RoleId = r.Id
-WHERE r.Name = 'Admin'
+SELECT
+    u."Email",
+    u."DisplayName",
+    r."Name" as "Role"
+FROM "AspNetUsers" u
+INNER JOIN "AspNetUserRoles" ur ON u."Id" = ur."UserId"
+INNER JOIN "AspNetRoles" r ON ur."RoleId" = r."Id"
+WHERE r."Name" = 'Admin';

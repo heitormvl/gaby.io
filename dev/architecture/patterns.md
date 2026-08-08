@@ -94,7 +94,7 @@ Todo o projeto usa **Injeção de Dependência**:
 ```csharp
 // Program.cs - Registro de serviços
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<UserModel>, 
     UserClaimsPrincipalFactory>();
