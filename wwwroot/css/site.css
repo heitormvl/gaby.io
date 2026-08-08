@@ -274,6 +274,12 @@ select.form-select:has(option[value=""]:checked) {
     font-weight: 600;
   }
 
+  /* .card-header's colored background is stripped above; text set to text-white for that
+     background would otherwise render invisible (white-on-white). */
+  .card-header.text-white {
+    color: #1a1a1a !important;
+  }
+
   /* Buttons: rounded, semibold, tinted fills (color-preserving per Bootstrap variant) */
   .btn {
     border-radius: 12px !important;
